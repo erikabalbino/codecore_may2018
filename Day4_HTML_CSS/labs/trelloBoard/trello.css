@@ -1,0 +1,51 @@
+
+html {
+    font-family: Helvetica, sans-serif; 
+    background-color: black;
+}
+
+body {
+    background-color: lightgray;
+    margin: 10px;
+    border-radius: 5px;
+}
+
+div {
+    width: 100vm;
+    height: 95vh;
+}
+h1 {
+    color: black;
+    padding: 5px;
+}
+#title2 {
+    display: inline-block;
+}
+
+#title3 {
+    display: inline-block;
+    float: right;
+}
+
+#title4 {
+    color: darkgray;
+    padding: 15px;
+    position: absolute;
+    bottom: 0;
+}
+
+ul {
+    padding: 0;
+    margin: 5;
+}
+
+ul > li {
+    color: black;
+    height: 20px;
+    background-color: white;
+    border-radius: 7px;
+    margin: 10px;
+    padding: 15px;
+    font-size: 25px;
+}
+
