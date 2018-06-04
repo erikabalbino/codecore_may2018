@@ -40,7 +40,7 @@
         align-items: center;
         justify-content: center;
       }
-      .num:after {
+      .num::after {
         content: '0';
         color: white;
         font-size: 3em;
@@ -70,42 +70,74 @@
     </div>
 
     <h3>order</h3>
+     <!--
+    The default value of `order` is 0.
+    Flex-item with larger values of order are placed at the end while
+    those with a smaller value are placed at the beginning.
+    The ordering for flex items, when their order values are the same, follows
+    their location in the html code.
+  -->
     <pre><strong>order:</strong> [any integer];</pre>
     <div class="flex-me">
       <div class="num"></div>
-      <div class="num one"></div>
+      <div class="num one" style="order: 1"></div>
       <div class="num two"></div>
       <div class="num three"></div>
-      <div class="num four"></div>
+      <div class="num four" style="order: -1;"></div>
       <div class="num five"></div>
     </div>
 
     <h3>flex-grow</h3>
+   <!--
+    The default value for `flex-grow` is 0. This turns it off.
+    This property controls how a flex item's content grows to occupy
+    white space this is available inside of its parent flex container.
+    A flex item with a flex-grow of 2 will take up 2 times more space than
+    a flex-item with a value of 1.
+    Consider the items below flex-grows of 1, 2 and 3. To calculate
+    their relative white space consumption, do:
+    Total space available: 1 + 2 + 3 = 6
+    For 1: 1/6
+    For 2: 2/6 = 1/3
+    For 3: 3/6 =  1/2
+  -->
     <pre><strong>flex-grow:</strong> [any integer];</pre>
     <div class="flex-me">
       <div class="num"></div>
-      <div class="num one"></div>
+      <div class="num one" style="flex-grow: 1"></div>
       <div class="num two"></div>
       <div class="num three"></div>
-      <div class="num four"></div>
-      <div class="num five"></div>
+      <div class="num four" style="flex-grow: 2"></div>
+      <div class="num five" style="flex-grow: 3"></div>
     </div>
 
     <h3>flex-shrink</h3>
+    <!--
+    `flex-shrink` begins with the default value of 1.
+  -->
     <pre><strong>flex-shrink:</strong> [any integer];</pre>
     <div class="flex-me">
-      <div class="num"></div>
+      <div class="num" style="flex-shrink: 0"></div>
       <div class="num one"></div>
-      <div class="num two"></div>
+      <div class="num two" style="flex-shrink: 2"></div>
       <div class="num three"></div>
       <div class="num four"></div>
-      <div class="num five"></div>
+      <div class="num five" style="flex-shrink: 6"></div>
     </div>
 
     <h3>flex-basis</h3>
+    <!--
+    The `flex-basis` controls a dimension of a flex-item
+    based on the direction of the flex line. If the flex line is
+    oriented as a `row`, the flex basis will control the width of the
+    item. If the flex line is oriented as a `column`, the flex basis
+    control the height of the item. Only works on flex items.
+
+    Flex-basis works with any unit usuable with height/width.
+  -->
     <pre><strong>flex-basis:</strong> [any unit] | 0 | auto;</pre>
-    <div class="flex-me">
-      <div class="num"></div>
+    <div class="flex-me" style="flex-direction: column">
+      <div class="num" style="flex-basis: 400px"></div>
       <div class="num one"></div>
       <div class="num two"></div>
       <div class="num three"></div>
@@ -115,13 +147,13 @@
 
     <h3>align-self</h3>
     <pre><strong>align-self:</strong> stretch | flex-start | flex-end | center | baseline;</pre>
-    <div class="flex-me">
+    <div class="flex-me" >
       <div class="num"></div>
-      <div class="num one"></div>
-      <div class="num two"></div>
-      <div class="num three"></div>
-      <div class="num four"></div>
-      <div class="num five"></div>
+      <div class="num one" style="align-self: flex-start"></div>
+      <div class="num two" style="align-self: flex-end"></div>
+      <div class="num three" style="align-self: center"></div>
+      <div class="num four" style="align-self: baseline"></div>
+      <div class="num five" style="align-self: baseline"></div>
     </div>
   </body>
 </html>
