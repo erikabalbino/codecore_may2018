@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Two Sidebar</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+        }
+
+        main {
+            display: flex;
+            flex-wrap: wrap;
+            height: 100vh;
+            margin: 10px;
+        }
+
+        .row1, .row2 {
+            width: 100%;
+        }
+
+        .row1 {
+            background-color: lightblue;
+            height: 10%;
+        }
+
+        h1 {
+            padding: 5px;
+        }
+        h2{
+            padding: 10px;
+            text-align: justify;
+            font-size: 20px;
+        }
+
+        .row2 {
+            display: flex;
+            background-color: lightgray;
+            height: 90%;
+        }
+        
+        .col1, .col2, .col3 {
+            height: 100%
+        }
+
+        .col1 {
+            width: 25%;
+            background-color: blue;
+        }
+        .col2 {
+            display: flex;
+            flex-wrap: wrap;
+            width: 50%;
+            background-color: white;
+        }
+        .row1a {
+            height: 25%;
+            width: 100%;
+            border: 5px solid black;
+            margin: 10px;
+        }
+        .row1b {
+            display: flex;
+            /* flex-wrap: wrap; */
+            height: 35%;
+            width: 100%;
+            /* border: 5px dotted black; */
+            /* margin: 10px; */
+            justify-content: center;
+        }
+
+        .pic2 {
+            /* height: 45%; */
+            width: 46%;
+            border: 5px solid;
+            margin: 10px;
+        }
+
+        .col3 {
+            width: 25%;
+            background-color: blue;
+        }
+        .pic {
+            height: 25%;
+            width: calc(100% - 20px);
+            background-color: white;
+            margin: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <main>
+        <div class="row1">
+            <h1>Nice title</h1>
+        </div>
+        <div class="row2">
+            <div class="col1">
+                <h2>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Temporibus, architecto. Tempore temporibus assumenda eaque a laboriosam, asperiores sapiente eveniet modi quaerat in. Praesentium quibusdam consectetur magni tenetur, nisi placeat dolore?</h2>
+            </div>
+            <div class="col2">
+                <div class="row1a"></div>
+                <div class="row1b">
+                    <div class="pic2"></div>
+                    <div class="pic2"></div>
+                </div>
+                <div class="row1b">
+                    <div class="pic2"></div>
+                    <div class="pic2"></div>
+                </div>
+            </div>
+            <div class="col3">
+                <div class="pic"></div>
+                <div class="pic"></div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
