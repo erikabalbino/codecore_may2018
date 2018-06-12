@@ -28,17 +28,17 @@ console.log(rest); // { c: 3, d: 4 }
 function myFunc(array) {
     console.log(array[0]);
     console.log(array.slice(1));
-  }
+}
   
-  function myFuncDestruc([first, ...rest]) {
-    console.log(first);
-    console.log(rest);
-  }
+function myFuncDestruc([first, ...rest]) {
+  console.log(first);
+  console.log(rest);
+}
 
-  function myFn ({a, b, ...rest}) {
-    console.log(a);
-    console.log(b);
-    console.log(rest);
-  }
+function myFn ({a, b, ...rest}) {
+  console.log(a);
+  console.log(b);
+  console.log(rest);
+}
   
   myFn({ x: 1, b: 2, t: 4, f: 5 });

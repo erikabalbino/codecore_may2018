@@ -48,28 +48,28 @@ const ArrayExtras = {
 // Demo: A Counter
 
 const counter = {
-    count: 0,
-    step: 1,
-    inc() {
-      this.count += this.step;
-      return this;
-    },
-    dec() {
-      this.count -= this.step;
-      return this;
-    },
-    now() {
-      return this.count;
-    },
-    set(newCount) {
-      this.count = newCount;
-      return this;
-    },
-    setStep(newStep) {
-      this.step = newStep;
-      return this;
-    }
-  };
+  count: 0,
+  step: 1,
+  inc() {
+    this.count += this.step;
+    return this;
+  },
+  dec() {
+    this.count -= this.step;
+    return this;
+  },
+  now() {
+    return this.count;
+  },
+  set(newCount) {
+    this.count = newCount;
+    return this;
+  },
+  setStep(newStep) {
+    this.step = newStep;
+    return this;
+  }
+};
 // Example usage:
 counter.inc(); // 1
 counter.inc(); // 2
@@ -145,13 +145,6 @@ const sonicSam = new Doggo("Sonic Sam", 5);
 // constructor.
 Doggo.prototype.bark = function() {
   return `${this.name} barks "Bork, bork!"`;
-};// Demo: Doggo Learned Bark
-
-// Doggo.prototype is not the prototype of the Doggo constructor.
-// It refers to the prototype of instances of the Doggo
-// constructor.
-Doggo.prototype.bark = function() {
-  return `${this.name} barks "Bork, bork!"`;
 };
 
 // To get the prototype of any object including
@@ -176,9 +169,9 @@ Doggo.__proto__ == Function.prototype; // true
 
 // Demo: Model Doggo Fighter
 {
-function Doggo(name, age) {
-    this.name = name;
-    this.age = age;
+  function Doggo(name, age) {
+      this.name = name;
+      this.age = age;
   }
   
   Doggo.prototype.bark = function() {

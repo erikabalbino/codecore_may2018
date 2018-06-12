@@ -46,11 +46,11 @@ const StringExtras = {
     }
 }
 
-// let a = 'you';
+let a = 'you';
 
-// StringExtras.repeat(a, 3); // returns 'youyouyou'
+console.log(StringExtras.repeat(a, 3)); // returns 'youyouyou'
 // StringExtras.repeat(' ', 6); // returns '      '
-// StringExtras.leftPad(a, 5); // returns '  you'
+console.log(StringExtras.leftPad(a, 5)); // returns '  you'
 // StringExtras.leftPad(a, 1); // returns 'you'
 // StringExtras.leftPad(a, 3); // returns 'you'
 // StringExtras.leftPad(a, 4); // returns ' you'
