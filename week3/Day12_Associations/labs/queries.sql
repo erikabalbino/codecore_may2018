@@ -55,11 +55,10 @@
 --     products.name,
 --     products.remaining_quantity AS Product_remaining,
 --     SUM(line_items.quantity) AS Sum_Line_Items,
---     SUM(line_items.quantity) + products.remaining_quantity AS stock
+--     COALESCE(SUM(line_items.quantity), 0) + products.remaining_quantity AS stock
 -- FROM products
 -- -- INNER JOIN line_items ON product_id = products.id
--- -- LEFT JOIN line_items ON product_id = products.id
--- -- CROSS JOIN line_items
+-- LEFT JOIN line_items ON product_id = products.id
 -- GROUP BY line_items.id, products.id
 -- ORDER BY name;
 
