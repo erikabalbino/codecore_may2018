@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <title>Express Demo</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-    </head>
-    <body style="background-color: <%= color %>;">
-        <h1>Hi, <%= fullName %> ! </h1>
-        <p>Your favourite time of day is "<%= timeOfDay %>".</p>
-    </body>
-</html>
+<%- include("./partials/header") %>
+
+    <style>
+    body {
+        background-color: <%= color %>;
+    }
+    </style>
+    <h1>Hi, <%= fullName %> ! </h1>
+    <p>Your favourite time of day is </p>
+
+<%- include("./partials/header") %>
