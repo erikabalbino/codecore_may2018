@@ -1,0 +1,21 @@
+{
+  "name": "express_demo",
+  "version": "0.0.1",
+  "description": "This is a demo project fro express lessons",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "express",
+    "web",
+    "app",
+    "tutorial",
+    "lesson"
+  ],
+  "author": "Erika Balbino",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
