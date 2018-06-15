@@ -1,0 +1,15 @@
+<%- include("./partials/header") %>
+
+    <h1>Pick Random</h1>
+
+    <form action="/random_person" method="GET">
+        <label for="names">Enter a list of names</label>
+        <textarea name="names" id="names" rows="1" cols="25"><%= listNames %></textarea>
+        <input type="submit" value="Picker Name">
+    </form>
+
+    <% if (pickerName) {%>
+        <p>The winner is <%= pickerName %> !!</p>
+    <% } %>
+
+<%- include("./partials/footer") %>

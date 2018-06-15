@@ -1,0 +1,20 @@
+
+<%- include("./partials/header") %>
+
+    <h1>🚗  My Car! 🚕</h1>
+
+    <% if (carYear) {%>
+        <p>The car is <%= carAge %> !!</p>
+    <% } %>
+
+    <form action="/car_status" method="GET">
+        <label for="year">What the year of your car?</label> <br>
+        <select name="year" id="year">
+            <% for (let i = 2025; i >= 1950; i--) {%>
+                <option value="<%= i %>"><%= i %></option>
+            <% }%>
+        </select>
+        <input type="submit" value="Submit">
+    </form>
+
+<%- include("./partials/footer") %>
