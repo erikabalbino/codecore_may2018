@@ -1,0 +1,25 @@
+
+<%- include("./partials/header") %>
+
+
+    <h1> 0️⃣1️⃣ Fizz Buzz 1️⃣0️⃣0️⃣</h1>
+
+    <form action="/fizz_buzz" method="GET" >
+
+        <h1>Type two numbers between 1 and 100:</h1>
+
+        <label for="num1">Number1:</label>
+        <input type="number" name="num1" min="1" max="100" value="<% num1 %>">
+
+        <label for="num2">Number2:</label>
+        <input type="number" name="num2" min="1" max="100" value="<% num2 %>">
+
+        <button type="submit">Submit</button>
+        
+    </form>
+    <ul>
+    <% fizzBuzzArr.forEach( function(val) { %>
+        <li><%= val %></li>
+        <% }) %>
+    </ul>
+<%- include("./partials/footer") %>

@@ -1,0 +1,20 @@
+{
+	"name": "express_application",
+	"version": "1.0.0",
+	"description": "This is a mish-mash of express pages",
+	"main": "app.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "nodemon app.js"
+	},
+	"author": "Maxwell Gordon",
+	"license": "ISC",
+	"dependencies": {
+		"ejs": "^2.5.9",
+		"express": "^4.16.3",
+		"morgan": "^1.9.0"
+	},
+	"devDependencies": {
+		"nodemon": "^1.17.3"
+	}
+}

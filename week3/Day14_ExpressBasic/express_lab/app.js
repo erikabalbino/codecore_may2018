@@ -41,6 +41,31 @@ app.get("/random_person", (request, response) => {
     response.render("random", {pickerName: winner, listNames: names});
 });
 
+app.get("/fizz_buzz", (request, response) => {
+    console.log("This is the GET fizz_buzz event handler", request.query);
+    const num1 = request.query.num1;
+    const num2 = request.query.num2;
+    // console.log("num1", num1);
+    // console.log("num2", num2);
+
+    const fizzBuzzArr = [];
+	if (num1 && num2) {
+		for (let i = 1; i <= 100; i++) {
+			if (i % num1 === 0 && i % num2 === 0) {
+				fizzBuzzArr.push('FizzBuzz');
+			} else if (i % num1 === 0) {
+				fizzBuzzArr.push('Fizz');
+			} else if (i % num2 === 0) {
+				fizzBuzzArr.push('Buzz');
+			} else {
+				fizzBuzzArr.push(i);
+			}
+		}
+	}
+        //  console.log("Array", fizzBuzzArr);
+
+    response.render("fizz_buzz", {fizzBuzzArr, num1, num2} );
+})
 
 const PORT = 4000;
 const DOMAIN = "localhost";
