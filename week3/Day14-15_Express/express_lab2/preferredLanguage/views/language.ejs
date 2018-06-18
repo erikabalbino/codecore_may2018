@@ -1,0 +1,19 @@
+<%- include("./partials/header") %>
+
+<form action="/language" method="POST">
+    <div>
+        <label for="name">Give me a name: </label> <br>
+        <input type="text" name="name">
+    </div>
+
+    <label for="lang">Pick a language </label> <br>
+    <select name="lang" id="lang">
+        <option value="english">English</option>
+        <option value="french">French</option>
+        <option value="spanish">Spanish</option>
+    </select>
+    <input type="submit" value="Submit">
+
+</form>
+
+<%- include("./partials/footer") %>
