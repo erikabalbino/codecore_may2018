@@ -1,0 +1,18 @@
+<%- include("../partials/header") %>
+  <% for (let post of allPosts) {%>
+    <div class="card mb-4">
+      <img src="<%= post.pictureUrl %>" alt="" class="card-img-top">
+
+      <div class="card-body">
+        <h4 class="card-title">
+          <%= post.username %>
+        </h4>
+        <p class="card-text">
+          <%= post.description %>
+        </p>
+      </div>
+    </div>
+  <% } %>
+
+
+<%- include("../partials/footer") %>

@@ -16,6 +16,7 @@ const router = express.Router();
 router.get("/new", (req, res) => {
     res.render("posts/new"); // => the view path
 });
+
  //Posts#create
  //POST  /posts
 router.post("/", (req, res) => {
@@ -80,6 +81,18 @@ router.get("/:id", (req, res) => {
         });
   });
 
+  //Posts#index
+  // GET /posts
+
+  router.get("/", (req, res) => {
+    knex
+    .select("*")
+    .from("posts")
+    .then(posts => {
+        res.render("posts/index", { allPosts: posts });
+        // res.send(posts);
+    });
+  });
 
 // To able to use this file in other files, you
 // must export a value (e.g. array, object, number, string, class, etc.)
