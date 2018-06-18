@@ -2,7 +2,11 @@ const path = require("path"); // para mapear o public folder (path.join)
 const express = require("express");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
+
 const app = express();
+
+// Route Requires
+const postsRouter = require("./routes/posts");
 
 // This configures our express app to "ejs" to
 // render its views (the HTML it responds with.)
@@ -188,6 +192,9 @@ app.post("/sign-out", (req, res) => {
     res.clearCookie("username");
     res.redirect("/");
 })
+
+//Connect Routers to App
+app.use("/posts", postsRouter);
 
 const PORT = 4545;
 const DOMAIN = "localhost"; //127.0.0.1
