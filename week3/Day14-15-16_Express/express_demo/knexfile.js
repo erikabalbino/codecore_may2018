@@ -8,7 +8,7 @@ module.exports = {
       database: "express_demo"
     },
     migrations: {
-      tabeName: "knex_migrations",
+      tableName: "knex_migrations",
       directory: "./db/migrations"
     }
   },

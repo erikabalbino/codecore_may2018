@@ -1,0 +1,24 @@
+<%- include("../partials/header") %>
+
+  <% for (let note of allNotes) {%>
+    <div class="card mb-4">
+      <div class="card-body">
+
+        <h4 class="card-title">Id:
+          <%= note.id %>
+        </h4>
+
+        <p class="card-title">Title:
+          <%= note.title %>
+        </p>
+
+        <p class="card-text">Description:
+          <%= note.body %>
+        </p>
+        
+      </div>
+    </div>
+  <% } %>
+
+
+<%- include("../partials/footer") %>
