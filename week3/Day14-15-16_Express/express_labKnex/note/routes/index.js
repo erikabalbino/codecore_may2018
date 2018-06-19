@@ -87,8 +87,7 @@ router.post("/tasks", (req, res) => {
     .then(([tasks]) => {
         console.log("Notes insert result:", tasks);
         res.redirect(`/index`);
-        // res.render("tasks/index");
-        // res.send(note);
+        // res.send(tasks);
   });
     // res.send(req.body)
 })
