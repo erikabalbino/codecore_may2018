@@ -5,26 +5,27 @@
 # names then print all names in the array capitalized.
 # Also, try printing the names reversed as well.
 
-# name = " "
-# my_array = []
+name = " "
+my_array = []
 
-# while name != 'exit' do
-#     puts "give me a name: "
-#     input = gets.chomp
-#     my_array << input.capitalize
-# end    
-# p my_array
-
-
-names = []
-
-loop do
-  print "Give me a name!\n> "
-  input = gets.chomp
-  break if input.downcase == "exit"
-  names << input.capitalize
-end
+while name != 'exit' do
+    puts "give me a name: "
+    name = gets.chomp
+    my_array << name.capitalize
+end    
+my_array.pop
+p my_array
 
 
-puts "Here the names:"
-puts names
+# names = []
+
+# loop do
+#   print "Give me a name!\n> "
+#   input = gets.chomp
+#   break if input.downcase == "exit"
+#   names << input.capitalize
+# end
+
+
+# puts "Here the names:"
+# puts names
