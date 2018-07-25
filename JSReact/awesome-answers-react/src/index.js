@@ -30,13 +30,16 @@ const QuestionDetails = props => {
     );
 };
 
-const AnswerDetails = () => {
+const AnswerDetails = props => {
     return (
         <div>
-            <h1>Answers</h1>
-            <p>Of all the rooms to burn in your uncle's home .... the kitchen!</p>
-            <strong> By Wlisses Wisozk</strong> <br/>
-            <strong> Createt at: </strong> About 1 month ago
+            <h2>Answers</h2>
+            <p>{props.body}</p>
+            <strong> By {props.author.full_name}</strong> <br/>
+            <small>
+                <strong>Created at: </strong>
+                {props.created_at.toLocaleString()} 
+            </small>
         </div>
     );
 };
@@ -52,7 +55,12 @@ const QuestionShowPage = () => {
                 created_at={new Date()}
                 updated_at={new Date()}
             />
-            <AnswerDetails />
+
+            <AnswerDetails
+                body="Of all the rooms to burn in your uncle's home .... the kitchen!"
+                author={{full_name: "Wlisses Wisozk"}}
+                created_at={new Date()}
+             />
         </main>
     );
 };
