@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Amazon SPA</title>
+    <script src="/js/index.js"></script>
+    <link rel="stylesheet" href="/css/index.css">
+
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="#" data-target="welcome">Home</a>
+            |
+            <a href="#" data-target="product-new">New Product</a>
+            |
+            <a href="#" data-target="product-index">Products</a>
+        </nav>
+    </header>
+            
+    <main id="welcome" class="page active">
+        <h1>Amazon SPA</h1>
+    </main>
+    
+    <main id="product-show" class="page">
+    </main>
+
+    <main id="product-index" class="page">
+            <ul class="product-list"></ul>
+    </main>
+
+    <main id="product-new" class="page">
+        <h1>New Product</h1>
+    
+        <form id="product-new-form">
+            <div>
+                <label>Title</label>
+                <input type="text" name="title">
+            </div>
+            <div>
+                <label>Description</label></br>
+                <textarea name="description" cols="30" rows="10" ></textarea>
+            </div>
+            <div>
+                <label>Price</label></br>
+                <input type="text" name="price" >
+            </div>
+            </br>
+            <input type="submit" value="Create Product">
+        </form>
+    </main>
+
+</body>
+</html>

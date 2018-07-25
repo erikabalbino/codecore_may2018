@@ -1,0 +1,13 @@
+<%- include('../partials/header') %>
+
+<h1>Chatr</h1>
+
+<form id="new-message">
+  Username: <input type="text" name="username" placeholder="Username"class="user"><br>
+  <textarea name="content" placeholder="Type your message..."></textarea>
+  <input type="submit" value='Post Message' />
+</form>
+
+<ul id="messages"></ul>
+
+<%- include('../partials/footer') %>
