@@ -8,6 +8,7 @@ const QuestionShowPage = props => {
 
   return (
     <main>
+
       <QuestionDetails
         title="What is your favourite colour?"
         body="Red, green, blue, light golden rod, lime, magenta, etc."
@@ -16,8 +17,10 @@ const QuestionShowPage = props => {
         created_at={new Date()}
         updated_at={new Date()}
       />
+
       <h2>Answers</h2>
       <AnswerList answers={question.answers} />
+      
     </main>
   );
 };
