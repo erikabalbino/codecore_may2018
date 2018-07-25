@@ -5,23 +5,60 @@ import registerServiceWorker from './registerServiceWorker';
 
 // A function that returns a React Element (the value returned
 // by a call from React.createElement(...)) is a React Component.
-const QuestionDetails = () => {
+
+const QuestionDetails = props => {
     return (
         <div>
-            <h2> What is your favourite colour?</h2>
-            <p>Red, green, blue </p>
-            <p>By bridge toll </p>
+            <h2>{props.title}</h2>
+            <p>{props.body}</p>
+            <p>By {props.author.full_name}</p>
             <p>
-                <small>Seen 10 time(s)</small>{" • "} 
-                <small>Created 10 days ago</small>{" • "} 
-                <small>Last edited 2 hours ago</small> 
+                <small>
+                    <strong>View Count: </strong>
+                    {props.view_count}
+                </small>{" • "} 
+                <small>
+                    <strong>Created at: </strong>
+                    {props.created_at.toLocaleString()} 
+                </small>{" • "} 
+                <small>
+                    <strong>Updated at: </strong>
+                    {props.updated_at.toLocaleString()} 
+                </small>{" • "} 
             </p>
         </div>
-    )
-}
+    );
+};
+
+const AnswerDetails = () => {
+    return (
+        <div>
+            <h1>Answers</h1>
+            <p>Of all the rooms to burn in your uncle's home .... the kitchen!</p>
+            <strong> By Wlisses Wisozk</strong> <br/>
+            <strong> Createt at: </strong> About 1 month ago
+        </div>
+    );
+};
+
+const QuestionShowPage = () => {
+    return (
+        <main>
+            <QuestionDetails 
+                title="What is your favourite colour?"
+                body="Rd, green, blue, ...."
+                author={{full_name: "Bridge Troll"}}
+                view_count={22}
+                created_at={new Date()}
+                updated_at={new Date()}
+            />
+            <AnswerDetails />
+        </main>
+    );
+};
 
 // A self-closing component (that is a component with only
 // an opening tag) must end with `/>`. (i.e. <QuestionDetails />)
 
-ReactDOM.render(<QuestionDetails />, document.getElementById('root'));
+ReactDOM.render(<QuestionShowPage />, document.getElementById('root'));
 registerServiceWorker();
