@@ -12,9 +12,9 @@ const QuestionDetails = props => {
       <p>By {props.author.full_name}</p>
       <p>
         <Field name="View Count" value={props.view_count} />
-        {" â¢ "}
+        {" • "}
         <Field name="Created At" value={props.created_at.toLocaleString()} />
-        {" â¢ "}
+        {" • "}
         <Field name="Updated At" value={props.updated_at.toLocaleString()} />
       </p>
     </div>

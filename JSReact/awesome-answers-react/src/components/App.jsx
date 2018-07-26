@@ -9,6 +9,7 @@ const App = props => {
     return (
         <div>
             <QuestionIndexPage questions={questionIndexData} />
+            
             <QuestionShowPage  question={questionShowData}/>
         </div>
     )

@@ -9,7 +9,7 @@
 
 import React, { Component } from "react";
 import QuestionDetails from "./QuestionDetails";
-import AnswerDetails from "./AnswerDetails";
+// import AnswerDetails from "./AnswerDetails";
 import AnswerList from "./AnswerList";
 
 class QuestionShowPage extends Component {
@@ -24,14 +24,35 @@ class QuestionShowPage extends Component {
         this.state = {
             question: props.question
         }
+        
+        this.deleteQuestion = this.deleteQuestion.bind(this)
+
+    }
+
+    deleteQuestion(event){
+
+        // const { question } = this.state;
+        // console.log(question);
+
+        this.setState(
+            { question: undefined }
+        );
     }
 
     render () {
         const { question } = this.state;
+
+        if (!question){
+            return (
+                <main>
+                    <h2>Question doesn't exit</h2>
+                </main>
+            );
+        }
       
         return (
           <main>
-      
+            <hr/>
             <QuestionDetails {...question}
 
             //   title="What is your favourite colour?"
@@ -41,7 +62,10 @@ class QuestionShowPage extends Component {
             //   created_at={new Date()}
             //   updated_at={new Date()}
             />
-      
+
+            <button onClick={this.deleteQuestion}>Delete</button>
+
+            <hr/>
             <h2>Answers</h2>
             <AnswerList answers={question.answers} />
       
