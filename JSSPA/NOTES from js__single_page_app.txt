@@ -1,0 +1,566 @@
+# JS: Single Page Application
+Resources:
+[Certified.in | CodeCore Bootcamp May 2018 Cohort](https://codecore.certified.in/codecore-bootcamp-may-2018-cohort/js-single-page-app-4/class-presentation-221)
+
+`$ npm init`  *in order to generate a json file*
+`$ npm install http-server`
+`$ code .`
+
+.gitignore
+
+create a new folder `public`
+create two more folders under public `css` and `js`
+create a file under public `index.html`
+
+
+Update package.json 
+with ` "start": "http-server ./public -p 3002"`
+```json
+{
+  "name": "single_page_app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server ./public -p 3002"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "http-server": "^0.11.1"
+  }
+}
+
+```
+
+`$ npm start` *to start the server*
+go to awesome
+
+open awesome answers
+`$ rails s`
+
+
+on the browser console:
+*Because the there're two different servers running, we have to type the whole url address:*
+`> fetch("http://localhost:3000/api/v1/questions")`
+
+Add to Gemfile.rb
+`gem 'rack-cors'`
+bundle
+
+Change the config of `config/application.rb`
+```rb
+ config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins 'localhost:3002'
+        # "origins" options specifies the domains that are allowed
+        # to make cross-origin request to our Rails server
+        resource(
+          '/api/v1/*',
+          headers: :any,
+          credentials: true, # Allows cookies to be sent accross origins
+          # or with `fetch`
+          methods: [:get, :post, :delete, :patch, :put, :options]
+        )
+        # "resource" options specifies which urls we will be allowed
+        # to perform CORS on. Above, we say that all urls that begin
+        # with `/api/v1/` are allowed.
+      end
+```
+
+`$ rails s`
+
+On the localhost:3002
+On the browser console:
+`fetch("http://localhost:3000/api/v1/questions")`
+```
+fetch("http://localhost:3000/api/v1/questions")
+	.then(res => res.json())
+	.then(data => console.table(data))
+```
+
+
+debugger 
+```js
+// View Rendering
+document.addEventListener("DOMContentLoaded", () => {
+    Question.all().then(questions => {
+        debugger
+        qS(".question-list").innerHTML = "";
+    })
+})
+```
+```
+questions
+questions.map(question => `<li>${question.title}</li>`).join("")
+```
+
+Add to index.js
+```js
+// JS: Single Page Application
+
+// DOM Helpers
+
+const qS = (selector, node = document) => node.querySelector(selector);
+
+const qSA = (selector, node = document) => node.querySelectorAll(selector);
+
+// Requests
+const HOST = "localhost:3000";
+const API_BASE = "/api/v1";
+const BASE_URL = `http://${HOST}${API_BASE}`;
+
+const Question = {
+  all() {
+    return fetch(`${BASE_URL}/questions`).then(res => res.json());
+  }
+};
+
+// View Functions
+
+const viewQuestions = (questions = []) => {
+  return questions
+    .map(
+      question =>
+        `<li>
+          <a class="question-link" href="#" data-id="${question.id}">
+            ${question.title}
+          </a>
+        </li>`
+    )
+    .join("");
+};
+
+// View Rendering
+document.addEventListener("DOMContentLoaded", () => {
+  // Load questions for index
+  Question.all().then(questions => {
+    qS(".question-list").innerHTML = viewQuestions(questions);
+  });
+
+  // Link .question-link to question show
+  // We use event delegation, because the question-links
+  // are not initially loaded and may be replaced.
+  qS(".question-list").addEventListener("click", event => {
+    const { target } = event;
+
+    if (target.closest(".question-link")) {
+      event.preventDefault();
+      console.log(event.target);
+    }
+  });
+});
+```
+
+Add another fetch
+```
+const Question = {
+  all() {
+    return fetch(`${BASE_URL}/questions`).then(res => res.json());
+  },
+  one(id){
+      return fetch(`${BASE_URL}/questions`).then(res => res.json());
+  }
+};
+```
+Test on the browser:
+`Question.one(619).then(q => console.log(q))`
+
+Add 
+```js
+const viewQuestionDetails = question => {
+    return `
+      <div>
+        <h1>${question.title}</h1>
+        <p>${question.body}</p>
+        <p>
+          <small>Seen ${question.view_count} time(s)</small> â¢
+          <small>Liked ${question.like_count} time(s)</small> â¢
+          <small>Created at ${question.created_at}</small> â¢
+          <small>Updated at ${question.updated_at}</small>
+        </p>
+      </div>
+    `;
+};
+```
+
+Add
+```js
+    if (target.closest(".question-link")) {
+      event.preventDefault();
+      const id = target.dataset.id;
+     
+      Question.one(id).then(question => {
+            qS("#question-show").innerHTML = viewQuestionDetails(questions)
+        });
+    }
+  });
+});
+```
+
+Add
+```html
+<main id="welcome" class="page active">
+      <h1>Awesome Answers</h1>
+    </main>
+```
+
+Add to css
+```css
+html {
+    font-family: Helvetica, sans-serif;
+}
+  
+* {
+    font-family: inherit;
+    font-size: inherit;
+}
+  
+body {
+    margin: 0;
+}
+  
+.page:not(.active) {
+    display: none;
+}
+```
+
+Add to js
+```js
+const navigateTo = domId => {
+    qSA(".page").forEach(node => {
+        if (domId === node.id) {
+            node.classList.add("active");
+        } else {
+            node.classList.remove("active");
+        }
+    })
+}
+```
+
+Test on the browser:
+`navigateTo("question-index")`
+`navigateTo("welcome")`
+
+Now, starting a navbar
+
+Add to html
+```html
+    <header>
+        <nav>
+            <a href="#" data-target="welcome-index">Home</a>
+            |
+            <a href="#" data-target="question-index">Questions</a>
+        </nav>
+    </header>
+```
+
+Now let's add an eventListener
+```js
+  // Make Navbar navigable
+  qSA("a[data-target]").forEach(node => {
+    node.addEventListener("click", event => {
+      event.preventDefault();
+
+      const { target } = event;
+      const domId = target.dataset.target;
+      navigateTo(domId);
+    });
+  });
+```
+
+Add ` navigateTo("question-show") ` to
+```js
+Question.one(id).then(question => {
+        qS("#question-show").innerHTML = viewQuestionDetails(question);
+        navigateTo("question-show")
+      });
+```
+
+
+Let's do the new question:
+Add to html:
+`a href="#" data-target="question-new">New Question</a>` to the header
+
+and also
+```html
+    <main id="question-new" class="page">
+    <h1>New Question</h1>
+
+    <form id="question-new-form">
+        <div>
+        <input type="text" name="title" placeholder="What's your question?">
+        </div>
+        <div>
+        <textarea name="body" cols="30" rows="10" placeholder="Tell me more"></textarea>
+        </div>
+        <input type="submit" value="Create Question">
+    </form>
+    </main>
+```
+
+Now let's create the fetch to do the question:
+Add to js
+```js
+  create(params) {
+    return fetch(`${BASE_URL}/questions/`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(params)
+    }).then(res => res.json());
+  }
+```
+
+Test on the browser:
+`Question.create(body: "some body", title: "some title").then(data => {console.log(data)});`
+
+Error: 401 unathorized 
+
+Add
+```js
+const Session = {
+  create(params) {
+    return fetch(`${BASE_URL}/session`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(params)
+    }).then(res => res.json());
+  }
+};
+```
+
+```js
+// Temporarily hard-coding a login
+// This is a measure to measure to get around user login.
+// We should actually create a Sign In page and login
+// that way instead.
+Session.create({ email: "js@winterfell.gov", password: "supersecret" });
+```
+
+Test and still doesn't work
+Go to NETWORK 
+Session
+Scroll through Headers
+and  it looks like there's something missing:  the cookies
+
+Add to Session variable 
+```js
+credentials: "include",
+```
+
+And also
+```js
+const Question = {
+  all() {
+    return fetch(`${BASE_URL}/questions`, { credentials: "include" }).then(
+      res => res.json()
+    );
+  },
+  one(id) {
+    return fetch(`${BASE_URL}/questions/${id}`, {
+      credentials: "include"
+    }).then(res => res.json());
+  },
+  create(params) {
+    return fetch(`${BASE_URL}/questions/`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(params)
+    }).then(res => res.json());
+  }
+};
+
+```
+
+```js
+qS("#question-new-form").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const { currentTarget } = event;
+    const formData = new FormData(currentTarget);
+
+    Question.create({
+      title: formData.get("title"),
+      body: formData.get("body")
+    })
+      .then(data => {
+        const id = data.id;
+        currentTarget.reset();
+
+        return Question.one(id);
+      })
+      .then(question => {
+        qS("#question-show").innerHTML = viewQuestionDetails(question);
+        navigateTo("question-show");
+        refreshQuestionIndex();
+      });
+  });
+```
+
+the whole js file, should look like this:
+```js
+// JS: Single Page Application
+
+// DOM Helpers
+
+const qS = (selector, node = document) => node.querySelector(selector);
+
+const qSA = (selector, node = document) => node.querySelectorAll(selector);
+
+// Requests
+const HOST = "localhost:3000";
+const API_BASE = "/api/v1";
+const BASE_URL = `http://${HOST}${API_BASE}`;
+
+const Question = {
+  all() {
+    return fetch(`${BASE_URL}/questions`, { credentials: "include" }).then(
+      res => res.json()
+    );
+  },
+  one(id) {
+    return fetch(`${BASE_URL}/questions/${id}`, {
+      credentials: "include"
+    }).then(res => res.json());
+  },
+  create(params) {
+    return fetch(`${BASE_URL}/questions/`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(params)
+    }).then(res => res.json());
+  }
+};
+
+const Session = {
+  create(params) {
+    return fetch(`${BASE_URL}/session`, {
+      method: "POST",
+      // credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(params)
+    }).then(res => res.json());
+  }
+};
+
+// View Functions
+
+const viewQuestions = (questions = []) => {
+  return questions
+    .map(
+      question =>
+        `<li>
+          <a class="question-link" href="#" data-id="${question.id}">
+            ${question.title}
+          </a>
+        </li>`
+    )
+    .join("");
+};
+
+const viewQuestionDetails = question => {
+  return `
+    <div>
+      <h1>${question.title}</h1>
+      <p>${question.body}</p>
+      <p>
+        <small>Seen ${question.view_count} time(s)</small> â¢
+        <small>Liked ${question.like_count} time(s)</small> â¢
+        <small>Created at ${question.created_at}</small> â¢
+        <small>Updated at ${question.updated_at}</small>
+      </p>
+    </div>
+  `;
+};
+
+// View Rendering
+const navigateTo = domId => {
+  qSA(".page").forEach(node => {
+    if (domId === node.id) {
+      node.classList.add("active");
+    } else {
+      node.classList.remove("active");
+    }
+  });
+};
+
+// Temporarily hard-coding a login
+// This is a measure to measure to get around user login.
+// We should actually create a Sign In page and login
+// that way instead.
+Session.create({ email: "js@winterfell.gov", password: "supersecret" });
+
+const refreshQuestionIndex = () => {
+  Question.all().then(questions => {
+    qS(".question-list").innerHTML = viewQuestions(questions);
+  });
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  // Load questions for index
+  refreshQuestionIndex();
+
+  // Link .question-link to question show
+  // We use event delegation, because the question-links
+  // are not initially loaded and may be replaced.
+  qS(".question-list").addEventListener("click", event => {
+    const { target } = event;
+
+    if (target.closest(".question-link")) {
+      event.preventDefault();
+      const id = target.dataset.id;
+
+      Question.one(id).then(question => {
+        qS("#question-show").innerHTML = viewQuestionDetails(question);
+        navigateTo("question-show");
+      });
+    }
+  });
+
+  // Make Navbar navigable
+  qSA("a[data-target]").forEach(node => {
+    node.addEventListener("click", event => {
+      event.preventDefault();
+
+      const { target } = event;
+      const domId = target.dataset.target;
+      navigateTo(domId);
+    });
+  });
+
+  qS("#question-new-form").addEventListener("submit", event => {
+    event.preventDefault();
+
+    const { currentTarget } = event;
+    const formData = new FormData(currentTarget);
+
+    Question.create({
+      title: formData.get("title"),
+      body: formData.get("body")
+    })
+      .then(data => {
+        const id = data.id;
+        currentTarget.reset();
+
+        return Question.one(id);
+      })
+      .then(question => {
+        qS("#question-show").innerHTML = viewQuestionDetails(question);
+        navigateTo("question-show");
+        refreshQuestionIndex();
+      });
+  });
+});
+```

@@ -1,0 +1,323 @@
+# React: Basics
+Resources:
+[Certified.in | CodeCore Bootcamp May 2018 Cohort](https://codecore.certified.in/codecore-bootcamp-may-2018-cohort/js-react-basics-5/class-presentation-222)
+https://survivejs.com/react/introduction/
+
+`$ npm i -g create-react-app`
+
+`$ create-react-app —help`
+
+`$ create-react-app awesome-answers-react-may-2018 --use-npm`
+
+[image:57E5874D-4A1B-415A-9F20-7534922D81F1-1924-00015C2EA0C7719B/EBA12A2B-329A-44FF-B5C5-9F31CBA60D8A.png]
+
+`$ npm start`
+
+delete files in src folder, just leave 
+`index.css`
+`index.js`
+`registerServiceWorker.js`
+
+Modify index.js
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import registerServiceWorker from './registerServiceWorker';
+
+ReactDOM.render(<h1>Hello, World!</h1>, document.getElementById('root'));
+registerServiceWorker();
+
+```
+
+::*Create our First Component*::
+
+rename `index.js` to `index.jsx`
+
+or
+
+shift + command + p
+type `language` Enter
+type `react` Enter
+
+Add
+```js
+// A function that returns a React Element (the value returned
+// by a call from React.createElement(...)) is a React Component.
+const QuestionDetails = () => {
+    return (
+        <div>
+            <h2>What is your favourite colour?</h2>
+            <p>Red, green, blue, magenta, yellow, cyan, etc.</p>
+            <p>By Bridge Troll</p>
+            <p>
+                <small>Seen 10 time(s)</small> •
+                <small>Created 10 days ago</small> •
+                <small>Last edited 2 hours ago</small>
+            </p>
+        </div>
+    )
+}
+```
+
+```js
+// A self-closing component (that is a component with only
+// an opening tag) must end with `/>`. (i.e. <QuestionDetails />)
+ReactDOM.render(<QuestionDetails />, document.getElementById('root'));
+registerServiceWorker();
+```
+
+another example
+```js
+const AnswerDetails = () => {
+    return (
+        <div>
+            <h1>Answers</h1>
+            <form>
+                <textarea cols="10" rows="5"></textarea>
+                <input type="submit" value="Create Answer"></input>
+            </form>
+            <p>All of the answers here!</p>
+            <p>By Juliana Martins</p>
+            <p>
+                <strong>Created At:</strong> about 1 month ago
+            </p>
+        </div>
+    )
+}
+```
+
+```js
+ReactDOM.render(<AnswerDetails />, document.getElementById('root'));
+registerServiceWorker();
+```
+
+With react you can only 
+
+```js
+const QuestionShowPage = () => {
+    return (
+        <main>
+            <QuestionDetails/>
+            <AnswerDetails/>
+        </main>
+    )
+}
+
+// A self-closing component (that is a component with only
+// an opening tag) must end with `/>`. (i.e. <QuestionDetails />)
+ReactDOM.render(<QuestionShowPage />, document.getElementById('root'));
+registerServiceWorker();
+
+```
+
+Now let's introduce the concept of ::*PROPS*::
+
+modifying the QuestionDetails
+```js
+const QuestionDetails = props => {
+    return (
+        <div>
+        <h2>{props.title}</h2>
+        <p>{props.body}</p>
+        <p>By {props.author.full_name}</p>
+        <p>
+          <small>
+            <strong>View Count: </strong>
+            {props.view_count}
+          </small>
+          {" • "}
+          <small>
+            <strong>Created At: </strong>
+            {props.created_at.toLocaleString()}
+          </small>
+          {" • "}
+          <small>
+            <strong>Updated At: </strong>
+            {props.updated_at.toLocaleString()}
+          </small>
+        </p>
+      </div>
+    )
+}
+```
+
+```js
+const QuestionShowPage = () => {
+    return (
+        <main>
+            <QuestionDetails
+                title="What is your favourite color?"
+                body="Red, green, blue, light golden rod, lime, magenta, etc."
+                author={{ full_name: "Bridge Troll" }}
+                view_count={22}
+                created_at={new Date()}
+                updated_at={new Date()}
+                />
+            <AnswerDetails/>
+        </main>
+    )
+}
+```
+
+*::Writing components:::*
+```js
+const Field = props => {
+  return (
+    <small>
+      <strong>{props.name}: </strong>
+      {props.value}
+    </small>
+  );
+};
+```
+
+Under `const = QuestionDetails`  Replace `<small>…</small` to
+```js
+        <Field name="View Count" value={props.view_count} />
+        {" • "}
+        <Field name="Created At" value={props.created_at.toLocaleString()} />
+        {" • "}
+        <Field name="Updated At" value={props.updated_at.toLocaleString()} />
+```
+
+Under   `const = AnswerDetails`  Replace `<small>…</small` to
+```js
+      <p>
+        <field name="Created At" value={props.created_at.toLocaleString()} />
+      </p>
+```
+
+*::Modules:::*
+
+Under src directory
+Create a new directory just for components
+Create files `.jsx` for each component
+
+an example
+
+Field.js
+```js
+// You must React in every component file, because your
+// JSX tags will get converted to `React.createElement(...)`
+// calls. If React is not present, your program will throw
+// error saying that createElement doesn't exist for undefined.
+import React from "react";
+// When writing components, you named with beginning with a capital
+// letter. Otherwise, React will interpret your component as an
+// HTML tag and will use your component function.
+const Field = props => {
+  return (
+    <small>
+      <strong>{props.name}: </strong>
+      {props.value}
+    </small>
+  );
+};
+
+// module.exports = Field;
+export default Field;
+```
+
+AnswerDetails.jsx
+```js
+import React from "react";
+import Field from "./Field";
+
+const AnswerDetails = props => {
+  return (
+    <div>
+      <p>{props.body}</p>
+      <p>By {props.author.full_name}</p>
+      <p>
+        <Field name="Created At" value={props.created_at.toLocaleString()} />
+      </p>
+    </div>
+  );
+};
+
+export default AnswerDetails;
+```
+
+QuestionDetails.jsx
+```js
+import React from "react";
+import Field from "./Field";
+
+// A function that returns a React Element (the value returned
+// by a call from React.createElement(...)) is a React Component.
+const QuestionDetails = props => {
+  return (
+    <div>
+      <h2>{props.title}</h2>
+      <p>{props.body}</p>
+      <p>By {props.author.full_name}</p>
+      <p>
+        <Field name="View Count" value={props.view_count} />
+        {" •"}
+        <Field name="Created At" value={props.created_at.toLocaleString()} />
+        {" • "}
+        <Field name="Updated At" value={props.updated_at.toLocaleString()} />
+      </p>
+    </div>
+  );
+};
+// A self-closing component (that is a component with only
+// an opening tag) must end with `/>`. (i.e. <QuestionDetails />)
+
+export default QuestionDetails;
+```
+
+QuestionShowPage.jsx
+```js
+import React from "react";
+import QuestionDetails from "./QuestionDetails";
+import AnswerDetails from "./AnswerDetails";
+
+const QuestionShowPage = () => {
+  return (
+    <main>
+      <QuestionDetails
+        title="What is your favourite colour?"
+        body="Red, green, blue, light golden rod, lime, magenta, etc."
+        author={{ full_name: "Bridge Troll" }}
+        view_count={22}
+        created_at={new Date()}
+        updated_at={new Date()}
+      />
+      <AnswerDetails
+        body="Red."
+        author={{ full_name: "Sir Lancelot" }}
+        created_at={new Date()}
+      />
+    </main>
+  );
+};
+
+export default QuestionShowPage;
+```
+
+index.js
+```js
+import React from "react";
+import ReactDOM from "react-dom";
+import "./index.css";
+import registerServiceWorker from "./registerServiceWorker";
+import QuestionShowPage from "./components/QuestionShowPage";
+
+ReactDOM.render(<QuestionShowPage />, document.getElementById("root"));
+registerServiceWorker();
+```
+
+::*Add Styling*::
+
+*You can use the style="" atribute to any react component* 
+like:
+```js
+    <small
+      style={{
+        color: "darkblue",
+        textTransform: "uppercase"
+      }}
+    >
+```

@@ -3,6 +3,7 @@ import Field from "./Field";
 
 // A function that returns a React Element (the value returned
 // by a call from React.createElement(...)) is a React Component.
+
 const QuestionDetails = props => {
   return (
     <div>
@@ -19,6 +20,7 @@ const QuestionDetails = props => {
     </div>
   );
 };
+
 // A self-closing component (that is a component with only
 // an opening tag) must end with `/>`. (i.e. <QuestionDetails />)
 
