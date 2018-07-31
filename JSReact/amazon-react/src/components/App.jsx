@@ -2,8 +2,10 @@ import React from "react";
 // import ProductDetails from "./ProductDetails";
 // import ReviewDetails from "./ReviewDetails";
 import ProductShowPage from "./ProductShowPage";
+import ProductIndexPage from "./ProductIndexPage";
 
 import productShowData from "../data/product-show";
+import productIndexData from "../data/product-index";
 
 // const ProductData = {
 //     "title": "Nice title",
@@ -24,7 +26,10 @@ const App = props => {
     return(
         <main>
             <div>
+                <ProductIndexPage products={productIndexData} />
+                <hr/>
                 <ProductShowPage product={productShowData} />
+                
                 {/* <ProductDetails product={ProductData}/>
                 <ReviewDetails review={ReviewData}/> */}
             </div>

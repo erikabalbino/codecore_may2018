@@ -4,7 +4,7 @@ import AnswerDetails from "./AnswerDetails";
 
 const AnswerList = props => {
 
-    const { answers = [] } = props;
+    const { answers = [], onAnswerDeleteClick = () => {} } = props;
 
     return (
       <ul>
@@ -16,8 +16,9 @@ const AnswerList = props => {
                 created_at={answer.created_at}
             /> */}
 
-            <AnswerDetails {...answer} />
-
+            {/* <AnswerDetails onDeleteClick={id => console.log("From AnswerList", id)} {...answer} /> */}
+            <AnswerDetails onDeleteClick={onAnswerDeleteClick} {...answer} />
+            <hr/>
           </li>
         ))}
       </ul>
