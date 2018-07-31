@@ -34,8 +34,17 @@ class QuestionShowPage extends Component {
     }
 
     componentDidMount() {
-        Question.one(818).then(question => {
-          console.log(question);
+        // console.log(this.props);
+
+        // react-router-dom will add 3 props to any component
+        // it renders:
+        // https://reacttraining.com/react-router/web/api/history
+        // console.log(this.props);
+
+        const questionId = this.props.match.params.id;
+
+        Question.one(questionId).then(question => {
+        //   console.log(question);
         this.setState({ loading: false, question: question});
         })
         .catch(() => {
