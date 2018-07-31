@@ -1,11 +1,14 @@
 import React, { Component } from "react";
+import Question from "../requests/question";
 
 class QuestionIndexPage extends Component {
     constructor(props){
         super(props);
 
         this.state = {
-            questions: props.questions || []
+            // questions: props.questions || []
+            loading: true,
+            questions: []
         }
 
         // For methods that we pass as callbacks to event listeners
@@ -19,6 +22,16 @@ class QuestionIndexPage extends Component {
         // and can never be changed again.
         this.deleteQuestion = this.deleteQuestion.bind(this)
     }
+
+    componentDidMount() {
+        Question.all().then(questions => {
+        //   console.table(questions);
+        this.setState({ loading: false, questions: questions});
+        })
+        .catch(() => {
+            this.setState({ loading:false });
+        });
+      }
 
     deleteQuestion(event){
         const { currentTarget } = event;
@@ -48,7 +61,16 @@ class QuestionIndexPage extends Component {
         // When destructuring a property from an object, you
         // can assign a default value if that property is
         // "undefined".
-        const { questions } = this.state;
+        const { loading, questions } = this.state;
+
+        if (loading) {
+            return (
+                <main>
+                    <h1>Questions</h1>
+                    <h2>Loading ...</h2>
+                </main>
+            )
+        }
     
         return (
             <main>

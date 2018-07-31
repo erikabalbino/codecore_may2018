@@ -10,10 +10,12 @@ const App = props => {
     return (
         <div>
             <CurrentDateTime />
+            {/* <QuestionShowPage  question={questionShowData}/> */}
+            <QuestionShowPage />
+
+            {/* <QuestionIndexPage questions={questionIndexData} /> */}
+            <QuestionIndexPage />
             
-            <QuestionIndexPage questions={questionIndexData} />
-            
-            <QuestionShowPage  question={questionShowData}/>
         </div>
     )
 }

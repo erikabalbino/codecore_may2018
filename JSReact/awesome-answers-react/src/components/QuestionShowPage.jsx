@@ -11,6 +11,7 @@ import React, { Component } from "react";
 import QuestionDetails from "./QuestionDetails";
 // import AnswerDetails from "./AnswerDetails";
 import AnswerList from "./AnswerList";
+import Question from "../requests/question";
 
 class QuestionShowPage extends Component {
 
@@ -22,12 +23,24 @@ class QuestionShowPage extends Component {
         super(props);
 
         this.state = {
-            question: props.question
+            // question: props.question
+            loading: true,
+            question: [ ]
         }
         
         this.deleteQuestion = this.deleteQuestion.bind(this)
         this.deleteAnswer = this.deleteAnswer.bind(this)
 
+    }
+
+    componentDidMount() {
+        Question.one(818).then(question => {
+          console.log(question);
+        this.setState({ loading: false, question: question});
+        })
+        .catch(() => {
+            this.setState({ loading:false });
+        });
     }
 
     deleteQuestion(event){
@@ -55,7 +68,16 @@ class QuestionShowPage extends Component {
     }
 
     render () {
-        const { question } = this.state;
+        const { loading, question } = this.state;
+
+        if (loading) {
+            return (
+                <main>
+                    <h1>Question</h1>
+                    <h2>Loading ...</h2>
+                </main>
+            )
+        }
 
         if (!question){
             return (
