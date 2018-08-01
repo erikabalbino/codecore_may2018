@@ -81,7 +81,8 @@ class App extends Component {
                             isAuth={currentUser}
                             path="/questions/new" 
                             exact 
-                            component={QuestionNewPage} 
+                            // component={QuestionNewPage} 
+                            render={props => <QuestionNewPage {...props} />}
                         />
     
                         {/* <QuestionShowPage  question={questionShowData}/> */}
