@@ -8,11 +8,13 @@ const NavBar = props => {
         <NavLink exact to="/">
           Welcome
         </NavLink>
-        <NavLink exact to="/questions/new">
-          New Question
+        ✧
+        <NavLink exact to="/products/new">
+          New Product
         </NavLink>
-        <NavLink exact to="/questions">
-          Questions
+        ✧
+        <NavLink exact to="/products">
+          Products
         </NavLink>
       </nav>
     );

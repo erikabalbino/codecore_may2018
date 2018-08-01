@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import Product from "../requests/product";
+import { Link } from "react-router-dom";
 
 class ProductIndexPage extends Component {
 
@@ -6,10 +8,22 @@ class ProductIndexPage extends Component {
         super(props);
 
         this.state = {
-            products: props.products || []
+            // products: props.products || []
+            loading: true,
+            products: []
         }
 
         this.deleteProduct = this.deleteProduct.bind(this);
+    }
+
+    componentDidMount() {
+        Product.all().then(products => {
+        //   console.table(products);
+        this.setState({ loading: false, products: products});
+        })
+        .catch(() => {
+            this.setState({ loading:false });
+        });
     }
 
     deleteProduct(event) {
@@ -23,7 +37,16 @@ class ProductIndexPage extends Component {
     }
 
     render(){
-        const { products } = this.state;
+        const { loading, products } = this.state;
+
+        if (loading) {
+            return (
+                <main>
+                    <h1>Products</h1>
+                    <h2>Loading ...</h2>
+                </main>
+            )
+        }
 
         return (
             <main>
@@ -32,9 +55,11 @@ class ProductIndexPage extends Component {
                     {products.map((product, index) => 
                         <li style={{ marginBottom: "1rem" }} key={product.id}>
                             {/* <span>{new Date(product.created_at).toLocaleDateString()}</span> •{" "} */}
-                            <a href="#not-used">{product.title}</a><br/>
+                            {/* <a href="#not-used">{product.title}</a><br/> */}
+                            <Link to={`/products/${product.id}`}>{product.title}</Link> <br/>
+
                             <span>Price: {product.price}</span><br/>
-                            <span>Seller: {product.seller.full_name}</span><br/>
+                            {/* <span>Seller: {product.seller.full_name}</span><br/> */}
                             {/* <button onClick={e => console.log(e.target,"Was clicked!")} */}
                             <button data-id={product.id} onClick={this.deleteProduct}
                             >Delete</button>

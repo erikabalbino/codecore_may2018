@@ -10,7 +10,8 @@ const ReviewDetails = props => {
             <p>Body: {review.body}</p>
             <p>rating: {review.rating}</p>
             
-            <small>By: {review.reviewer.full_name}</small> {" "}
+            {/* <small>By: {review.reviewer.full_name}</small> {" "} */}
+            <small>By: {review.author.full_name}</small> {" "}
             {/* <small>{review.created_at}</small> */}
             {/* <button onClick={() => console.log(review.id)}>Delete</button> */}
             {/* <button onClick={() => console.log("onDeleteClick", review.id)}>Delete</button> */}

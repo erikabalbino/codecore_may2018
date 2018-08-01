@@ -1,16 +1,33 @@
 import React, { Component } from "react";
 import ProductDetails from "./ProductDetails";
 import ReviewList from "./ReviewList";
+import Product from "../requests/product";
 
 
 class ProductShowPage extends Component {
     constructor(props){
         super(props);
         this.state = {
-            product: props.product
+            loading: true,
+            // product: props.product
+            product: [ ]
         }
 
         this.deleteReview = this.deleteReview.bind(this);
+    }
+
+    componentDidMount(){
+        // console.log(this.props);
+
+        const productId = this.props.match.params.id;
+
+        Product.one(productId).then(product => {
+            // console.log(product);
+            this.setState({loading: false, product: product});
+        })
+        .catch(() => {
+            this.setState({loading: false});
+        });
     }
 
     deleteReview(id){
@@ -26,7 +43,24 @@ class ProductShowPage extends Component {
         })
     }
     render() {
-        const { product } = this.state
+        const { loading, product } = this.state
+
+        if (loading){
+            return (
+                <main>
+                    <h1>Product</h1>
+                    <h2>Loading ...</h2>
+                </main>
+            )
+        }
+
+        if (!product){
+            return (
+                <main>
+                    <h2>Product doesn't exit</h2>
+                </main>
+            );
+        }
     
         return (
             <main>

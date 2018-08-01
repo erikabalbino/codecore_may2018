@@ -1,8 +1,14 @@
 import React from "react";
 // import ProductDetails from "./ProductDetails";
 // import ReviewDetails from "./ReviewDetails";
-import ProductShowPage from "./ProductShowPage";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+
+import NavBar from "./NavBar";
 import ProductIndexPage from "./ProductIndexPage";
+import ProductShowPage from "./ProductShowPage";
+import ProductNewPage from "./ProductNewPage";
+import WelcomePage from "./WelcomePage";
+
 
 import productShowData from "../data/product-show";
 import productIndexData from "../data/product-index";
@@ -24,16 +30,28 @@ import productIndexData from "../data/product-index";
 
 const App = props => {
     return(
-        <main>
-            <div>
-                <ProductIndexPage products={productIndexData} />
-                <hr/>
-                <ProductShowPage product={productShowData} />
-                
-                {/* <ProductDetails product={ProductData}/>
-                <ReviewDetails review={ReviewData}/> */}
-            </div>
-        </main>
+        <Router>
+            <main>
+                <div>
+                    <NavBar />
+                    <Switch>
+                        <Route path="/" exact component={WelcomePage} />
+
+                        {/* <ProductIndexPage products={productIndexData} /> */}
+                        <Route path="/products" exact component={ProductIndexPage} />
+                        {/* <hr/> */}
+
+                        <Route path="/products/new" exact component={ProductNewPage} />
+
+                        {/* <ProductShowPage product={productShowData} /> */}
+                        <Route path="/products/:id" exact component={ProductShowPage} />
+
+                        {/* <ProductDetails product={ProductData}/>
+                        <ReviewDetails review={ReviewData}/> */}
+                    </Switch>
+                </div>
+            </main>
+        </Router>
     )
 }
 

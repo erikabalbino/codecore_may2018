@@ -12,7 +12,7 @@ const ProductDetails = props => {
             <p>Description: {product.description}</p>
             <p>Price: {product.price}</p>
             
-            <small>By: {product.seller.full_name}</small> • <small>{product.created_at}</small>
+            {/* <small>By: {product.seller.full_name}</small> • <small>{product.created_at}</small> */}
         </div>
     )
 };
