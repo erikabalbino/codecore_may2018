@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 // We can rename (or alias) named imports
 // by using the `as` keyword as shown below:
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -9,32 +9,81 @@ import QuestionShowPage from "./QuestionShowPage";
 import QuestionNewPage from "./QuestionNewPage";
 import WelcomePage from "./WelcomePage";
 import SignInPage from "./SignInPage";
+import User from "../requests/user";
 
 // import questionIndexData from "../data/question-index";
 // import questionShowData from "../data/question-show";
 
-const App = props => {
-    return (
-        <Router>
-            <div>
-                <NavBar />
-                <Switch>
-                    <Route path="/" exact component={WelcomePage} />
+class App extends Component {
+    constructor(props) {
+        super(props);
 
-                    {/* <QuestionIndexPage questions={questionIndexData} /> */}
-                    {/* <QuestionIndexPage /> */}
-                    <Route path="/questions" exact component={QuestionIndexPage} />
-                    
-                    <Route path="/questions/new" exact component={QuestionNewPage} />
+        this.state = {
+            loading: true,
+            currentUser: undefined
+        };
+    
+        this.getUser = this.getUser.bind(this);
+      }
+    
+    getUser() {
+        return User.current().then(data => {
+            if (data.id) {
+            this.setState({
+                currentUser: data
+            });
+            }
+        });
+    }
 
-                    {/* <QuestionShowPage  question={questionShowData}/> */}
-                    {/* <QuestionShowPage /> */}
-                    <Route path="/questions/:id" component={QuestionShowPage} />
-                    <Route path="/sign_in" component={SignInPage} />
-                </Switch>
-            </div>
-        </Router>
-    )
+    componentDidMount() {
+        this.getUser().then(() => {
+          this.setState({ loading: false });
+        });
+    }
+
+    render () {
+        const { loading, currentUser } = this.state;
+
+        if (loading){
+            return(
+                <div>
+                    <h2>Loading...</h2>
+                </div>
+            );
+        }
+
+        return (
+            <Router>
+                <div>
+                    <NavBar currentUser={currentUser} />
+                    <Switch>
+                        <Route path="/" exact component={WelcomePage} />
+    
+                        {/* <QuestionIndexPage questions={questionIndexData} /> */}
+                        {/* <QuestionIndexPage /> */}
+                        <Route path="/questions" exact component={QuestionIndexPage} />
+                        
+                        <Route path="/questions/new" exact component={QuestionNewPage} />
+    
+                        {/* <QuestionShowPage  question={questionShowData}/> */}
+                        {/* <QuestionShowPage /> */}
+                        <Route path="/questions/:id" component={QuestionShowPage} />
+                        <Route
+                            path="/sign_in"
+                            render={props => (
+                                <SignInPage
+                                {...props}
+                                // onSignIn={() => console.log("Signed in!")}
+                                onSignIn={this.getUser}
+                                />
+                            )}
+                        />
+                    </Switch>
+                </div>
+            </Router>
+        )
+    }
 }
 
 export default App;
