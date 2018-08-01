@@ -98,7 +98,7 @@ class QuestionShowPage extends Component {
       
         return (
           <main>
-            <hr/>
+            
             <QuestionDetails {...question}
 
             //   title="What is your favourite colour?"

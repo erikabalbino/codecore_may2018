@@ -3,14 +3,15 @@ import React, { Component } from "react";
 // by using the `as` keyword as shown below:
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
+import AuthRoute from "./AuthRoute";
 import NavBar from "./NavBar";
 import QuestionIndexPage from "./QuestionIndexPage";
-import QuestionShowPage from "./QuestionShowPage";
 import QuestionNewPage from "./QuestionNewPage";
-import WelcomePage from "./WelcomePage";
+import QuestionShowPage from "./QuestionShowPage";
+import Session from "../requests/session";
 import SignInPage from "./SignInPage";
 import User from "../requests/user";
-import Session from "../requests/session";
+import WelcomePage from "./WelcomePage";
 
 // import questionIndexData from "../data/question-index";
 // import questionShowData from "../data/question-show";
@@ -76,11 +77,17 @@ class App extends Component {
                         {/* <QuestionIndexPage /> */}
                         <Route path="/questions" exact component={QuestionIndexPage} />
                         
-                        <Route path="/questions/new" exact component={QuestionNewPage} />
+                        <AuthRoute 
+                            isAuth={currentUser}
+                            path="/questions/new" 
+                            exact 
+                            component={QuestionNewPage} 
+                        />
     
                         {/* <QuestionShowPage  question={questionShowData}/> */}
                         {/* <QuestionShowPage /> */}
                         <Route path="/questions/:id" component={QuestionShowPage} />
+                        
                         <Route
                             path="/sign_in"
                             render={props => (
@@ -91,6 +98,10 @@ class App extends Component {
                                 />
                             )}
                         />
+                    {/* 
+                        <AuthRoute path="/questions/new" component={QuestionNewPage} />
+                    */}
+
                     </Switch>
                 </div>
             </Router>
