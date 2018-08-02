@@ -1,0 +1,719 @@
+# React: Authentication
+have the 2 projects open
+`cd awesome-answers`
+`rails s`
+
+`cd awesome-answers-react`
+`npm start`
+
+on awesome-answers-react
+create a new component:
+
+SingInPage.jsx
+```js
+import React, { Component } from "react";
+
+class SignInPage extends Component {
+  render() {
+    return (
+      <main>
+        <h2>Sign In</h2>
+      </main>
+    );
+  }
+}
+
+export default SignInPage;
+```
+
+Add to App.jsx
+`import SignInPage from "./SignInPage";`
+and
+`<Route path="/sign_in" component={SignInPage} />`
+
+Add to NavBar component
+```js
+      <NavLink exact to="/sign_in">
+        Sign In
+      </NavLink>
+```
+
+Add to SingInPage.jsx
+```js
+class SignInPage extends Component {
+  render() {
+    return (
+      <main>
+        <h2>Sign In</h2>
+        <form>
+          <div>
+            <label htmlFor="email">Email</label> <br />
+            <input type="text" name="email" id="email" />
+          </div>
+
+          <div>
+            <label htmlFor="password">Password</label> <br />
+            <input type="password" name="password" id="password" />
+          </div>
+
+          <input type="submit" value="Sign In" />
+        </form>
+      </main>
+    );
+  }
+}
+```
+
+Create a file under request/config.js
+```js
+// import { HOST, BASE_URL } from ".../requests/config";
+export const HOST = "localhost:3000";
+export const API_BASE = "/api/v1";
+export const BASE_URL = `http://${HOST}${API_BASE}`;
+
+// export { HOST, API_BASE, BASE_URL };
+```
+
+Add `import { BASE_URL } from "./config";` 
+to both `question.js` and to `session.js`
+
+Add to SignInPage.jsx
+`import Session from "../requests/session";`
+Start constructor:
+*note that here we don't have state*
+```js
+  constructor(props) {
+    super(props);
+
+    this.createSession = this.createSession.bind(this);
+  }
+```
+
+```js
+  createSession(event) {
+    event.preventDefault();
+    const { currentTarget } = event;
+  }
+```
+
+`<form onSubmit={this.createSession}>`
+
+Create the format instance:
+`  const formData = new FormData(currentTarget);`
+Create a login:
+```js
+Session.create({
+      email: formData.get("email"),
+      password: formData.get("password")
+    });
+```
+
+If this is successful, we'll redirect the user to home page:
+using .push
+```js
+Session.create({
+      email: formData.get("email"),
+      password: formData.get("password")
+    }).then(data => {
+      console.log(data);
+
+      // SignInPage gets access to the "history" prop,
+      // because it is being rendered by a Route component.
+      // (i.e. <Route path="/" component={SignInPage} />)
+      this.props.history.push("/");
+    });
+  }
+```
+
+So far, SignInPage should look like this:
+```js
+import React, { Component } from "react";
+import Session from "../requests/session";
+
+class SignInPage extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      errorMessage: undefined
+    };
+
+    this.createSession = this.createSession.bind(this);
+  }
+
+  createSession(event) {
+    event.preventDefault();
+    const { currentTarget } = event;
+
+    const formData = new FormData(currentTarget);
+
+    Session.create({
+      email: formData.get("email"),
+      password: formData.get("password")
+    }).then(data => {
+      console.log(data);
+
+      if (data.status === 404) {
+        this.setState({
+          errorMessage: "Invalid username or password"
+        });
+      } else {
+        // SignInPage gets access to the "history" prop,
+        // because it is being rendered by a Route component.
+        // (i.e. <Route path="/" component={SignInPage} />)
+        this.props.history.push("/");
+      }
+    });
+  }
+
+  render() {
+    const { errorMessage } = this.state;
+    return (
+      <main>
+        <h2>Sign In</h2>
+        <form onSubmit={this.createSession}>
+          {errorMessage ? <p>{errorMessage}</p> : null}
+          <div>
+            <label htmlFor="email">Email</label> <br />
+            <input type="text" name="email" id="email" />
+          </div>
+
+          <div>
+            <label htmlFor="password">Password</label> <br />
+            <input type="password" name="password" id="password" />
+          </div>
+
+          <input type="submit" value="Sign In" />
+        </form>
+      </main>
+    );
+  }
+}
+
+export default SignInPage;
+```
+
+remove two lines of index.js
+`import Session from "./requests/session";`
+`Session.create({ email: "js@winterfell.gov", password: "supersecret" });`
+
+Now we have to have our on sign in prop
+Because we're using cookies, we have to do in a certain way
+create a route to say who's current user
+
+[image:C7859847-0832-4EC9-B8BA-A7955CE233EA-239-0000A44FA17164E9/EB2C4062-BAB4-4654-B5F5-6E30966D7DAC.png]
+
+
+SignInPage
+Inside Session.create()
+```js
+ } else {
+        // Here we're using a callback prop to alert a parent
+        // component that a sign was successful.
+        // Our App component will be able to change its state
+        // response to this storing the user information
+        // we need.
+        const { onSignIn = () => {} } = this.props;
+        onSignIn();
+```
+
+App.jsx
+Now, how to I pass the props to my SignInPage?
+So, let's introduce the concept of render => which takes a callback that gives me a element, instead of a component:
+```js
+<Route
+            path="/sign_in"
+            render={props => (
+              <SignInPage
+                {...props}
+                onSignIn={() => console.log("Signed in!")}
+              />
+```
+
+Test browser.. You know it's work if you see the console.log
+
+
+On awesome-answers
+Let's add an api controller for users
+`rails g controller api::v1::users`
+Add routes 
+```rb
+resources :users, only: [] do
+ # /api/v1/users/current
+get :current, on: :collection
+end
+```
+
+Add to api/users_controller
+`Api::`
+```js
+class Api::V1::UsersController < Api::ApplicationController
+  before_action :authenticate_user!
+
+  def current
+    render json: current_user
+  end
+end
+```
+
+
+On awesome-answers-react
+Create a new file request/user.js
+```js
+
+```
+
+App.jsx
+```js
+          <Route
+            path="/sign_in"
+            render={props => <SignInPage {...props} onSignIn={this.getUser} />}
+          />
+```
+
+Now, we need to turn it into a class based component, to be able to use state:
+From: `const App = props => {`
+To: `class App extends Component {`
+
+Plus Add:
+`import User from "../requests/user";`
+and the constructor:
+```js
+  constructor(props) {
+    super(props);
+
+    this.getUser = this.getUser.bind(this);
+  }
+
+   getUser() {
+    User.current().then(currentUser => {
+      console.log(currentUser);
+    });
+  }
+```
+
+Test Browser, if it works you should the  current user's info in the console
+
+Add state to constructor:
+```js
+    this.state = {
+      currentUser: undefined
+    };
+```
+
+Update getUser()
+```js
+  getUser() {
+    User.current().then(currentUser => {
+      this.setState({
+        currentUser: currentUser
+      });
+    });
+  }
+```
+
+Add to App.jsx
+`  const { currentUser } = this.state;`
+```js
+<NavBar currentUser={currentUser} />
+```
+
+Add to NavBar.jsx
+`const { currentUser } = props;`
+```js
+ </NavLink>
+      {currentUser ? (
+        <span>{currentUser.full_name}</span>
+      ) : (
+        <NavLink className="supports-classname" exact to="/sign_in">
+          Sign In
+        </NavLink>
+      )}
+```
+
+Let's fix the style
+Add to index.css
+```js
+.NavBar span {
+  padding: 1rem;
+}
+```
+
+Add to App.jsx`loading: true,` inside `this.state` 
+Write our componentDidMount()
+```js
+  componentDidMount() {
+    this.getUser().then(() => {
+      this.setState({ loading: false });
+    });
+  }
+```
+
+In the render method, let's destructor loading from the state:
+```js
+render() {
+    const { currentUser, loading } = this.state;
+```
+
+Plus add if(loading)
+```js
+    if (loading) {
+      return (
+        <div>
+          <h2>Loading...</h2>
+        </div>
+      );
+```
+
+1. go to Application and delete the cookies
+2. go to React and it looks like the current  user is 401 (Anauthorized). So let's write a code to protect us from that
+
+Update to App.jsx
+```js
+  getUser() {
+    return User.current().then(data => {
+      if (data.id) {
+        this.setState({
+          currentUser: data
+        });
+      }
+    });
+  }
+```
+
+Test browser
+
+[image:A813E758-EE4E-45A3-BB8B-6CEAFD8DBD4D-239-0000A43880318D55/42AA2404-F71D-4CA2-92E9-CFFBFE522FCA.png]
+
+Let's now do the SignOut button in the NavBar
+
+NavBar.jsx
+
+React Fragment => allows you to put  next to each other, without needing to put inside div, span, or having a key={}
+```js
+      {currentUser ? (
+        <React.Fragment>
+          <span>{currentUser.full_name}</span>
+          <a href="#not-used">Sign Out</a>
+        </React.Fragment>
+      ) : (
+```
+
+*note that the mouse cursor only works for <a> with href="" attributes*
+
+Update the destructing:
+`const { currentUser, onSignOut = () => {} } = props;`
+Add a  handleClick callback
+```js
+  const handleClick = event => {
+    event.preventDefault();
+    onSignOut();
+  };
+```
+Update react fragment:
+```js
+<React.Fragment>
+          <span>{currentUser.full_name}</span>
+          <a onClick={handleClick} href="#not-used">
+            Sign Out
+          </a>
+        </React.Fragment>
+```
+
+Add to App.jsx
+```js
+    return (
+      <Router>
+        <div>
+          <NavBar
+            onSignOut={() => console.log("Sign out clicked!")}
+            currentUser={currentUser}
+          />
+```
+
+Make sure you have a destroy method on the api/v1/session_controller [awesome-answers]
+```
+```
+
+Add a destroy to request/session [awesome-answers-react]
+```js
+  destroy() {
+    return fetch(`${BASE_URL}/session`, {
+      method: "DELETE",
+      credentials: "include"
+    }).then(res => res.json());
+  }
+```
+
+back to App.jsx
+lets write a code to handle the signout
+Add:
+`import Session from "../requests/session";`
+Add to state:
+`this.destroySession = this.destroySession.bind(this);`
+Add:
+```js
+  destroySession() {
+    Session.destroy().then(() => {
+      this.setState({ currentUser: undefined });
+    });
+```
+Modify return routes:
+`<NavBar onSignOut={this.destroySession} currentUser={currentUser} />`
+
+Update NavBar.jsx
+so far the file should look like this:
+```js
+import React from "react";
+import { NavLink } from "react-router-dom";
+
+const NavBar = props => {
+  const { currentUser, onSignOut = () => {} } = props;
+
+  const handleClick = event => {
+    event.preventDefault();
+    onSignOut();
+  };
+
+  return (
+    <nav className="NavBar">
+      {/* <a href="/">Welcome</a> */}
+      <NavLink exact to="/">
+        Welcome
+      </NavLink>
+      {currentUser && (
+        <NavLink exact to="/questions/new">
+          New Question
+        </NavLink>
+      )}
+      <NavLink exact to="/questions">
+        Questions
+      </NavLink>
+      {currentUser ? (
+        <React.Fragment>
+          <span>{currentUser.full_name}</span>
+          <a onClick={handleClick} href="#not-used">
+            Sign Out
+          </a>
+        </React.Fragment>
+      ) : (
+        <NavLink className="supports-classname" exact to="/sign_in">
+          Sign In
+        </NavLink>
+      )}
+    </nav>
+  );
+};
+
+export default NavBar;
+
+```
+
+test browser
+OK, now we have a small problem: when the user signout, he stays in the console.log
+let's fix that:
+
+Add to App.jsx
+The idea is, If this is true go to this path:
+```js
+            {/* 
+              <AuthRoute path="/questions/new" component={QuestionNewPage} />
+             */}
+```
+
+Create a new component AuthRoute.jsx
+```js
+import React from "react";
+import { Route } from "react-router-dom";
+
+const AuthRoute = props => {
+    return <Route {... props} />;
+}
+
+export default AuthRoute;
+```
+
+Add to App.jsx
+`import AuthRoute from "./AuthRoute";`
+Add inside <Router>:
+```js
+ <AuthRoute
+              path="/questions/new"
+              exact
+              component={QuestionNewPage}
+            />
+```
+
+*a little trick*
+* select all the imports on App.jsx
+* shift + command +p 
+* type sort 
+* chose the sort option you want and enter
+
+Add to AuthRoute.jsx (uma caralhada de coisa)
+```js
+import React from "react";
+import { Redirect, Route } from "react-router-dom";
+
+const AuthRoute = props => {
+  const { isAuth = false, component, ...restProps } = props;
+
+  return (
+    <Route
+      render={routeProps => {
+        if (isAuth) {
+          return <component {...routeProps} />;
+        } else {
+          return <Redirect to="/sign_in" />;
+        }
+      }}
+      {...restProps}
+    />
+  );
+};
+
+export default AuthRoute;
+```
+
+test browser, and it's not working. I'm signin and not allow to go to New Questions
+[image:6F36FC21-E0A8-467A-BA76-212095718788-239-0000A6B733B9949B/53A84DD6-7E4A-4057-BC0E-BC6F4C19A319.png]
+
+
+To fix this, add to App.jsx ` isAuth={currentUser}` inside  `<AuthRoute…`
+
+Update to AuthRoute.jsx
+
+```js
+import React from "react";
+import { Redirect, Route } from "react-router-dom";
+
+const AuthRoute = props => {
+  const { isAuth = false, component: Component, render, ...restProps } = props;
+
+  return (
+    <Route
+      render={routeProps => {
+        if (isAuth) {
+          if (typeof render === "function") {
+            return render(routeProps);
+          } else {
+            return <Component {...routeProps} />;
+          }
+        } else {
+          return <Redirect to="/sign_in" />;
+        }
+      }}
+      {...restProps}
+    />
+  );
+};
+
+export default AuthRoute;
+```
+Update the App.jsx:
+`render={props => <QuestionNewPage {...props} />}`
+like:
+```js
+<AuthRoute
+              isAuth={currentUser}
+              path="/questions/new"
+              exact
+              render={props => <QuestionNewPage {...props} />}
+            />
+```
+
+App.jsx so far
+```js
+import React, { Component } from "react";
+// We can rename (or alias) named imports
+// by using the `as` keyword as shown below:
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+
+import AuthRoute from "./AuthRoute";
+import NavBar from "./NavBar";
+import QuestionIndexPage from "./QuestionIndexPage";
+import QuestionNewPage from "./QuestionNewPage";
+import QuestionShowPage from "./QuestionShowPage";
+import Session from "../requests/session";
+import SignInPage from "./SignInPage";
+import User from "../requests/user";
+import WelcomePage from "./WelcomePage";
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      loading: true,
+      currentUser: undefined
+    };
+
+    this.getUser = this.getUser.bind(this);
+    this.destroySession = this.destroySession.bind(this);
+  }
+
+  destroySession() {
+    Session.destroy().then(() => {
+      this.setState({ currentUser: undefined });
+    });
+  }
+
+  getUser() {
+    return User.current().then(data => {
+      if (data.id) {
+        this.setState({
+          currentUser: data
+        });
+      }
+    });
+  }
+
+  componentDidMount() {
+    this.getUser().then(() => {
+      this.setState({ loading: false });
+    });
+  }
+
+  render() {
+    const { currentUser, loading } = this.state;
+
+    if (loading) {
+      return (
+        <div>
+          <h2>Loading...</h2>
+        </div>
+      );
+    }
+
+    return (
+      <Router>
+        <div>
+          <NavBar onSignOut={this.destroySession} currentUser={currentUser} />
+          <Switch>
+            <Route path="/" exact component={WelcomePage} />
+            <Route path="/questions" exact component={QuestionIndexPage} />
+            <AuthRoute
+              isAuth={currentUser}
+              path="/questions/new"
+              exact
+              render={props => <QuestionNewPage {...props} />}
+            />
+            <Route path="/questions/:id" component={QuestionShowPage} />
+            <Route
+              path="/sign_in"
+              render={props => (
+                <SignInPage {...props} onSignIn={this.getUser} />
+              )}
+            />
+            {/* 
+              <AuthRoute path="/questions/new" isAuth={false} component={QuestionNewPage} />
+             */}
+          </Switch>
+        </div>
+      </Router>
+    );
+  }
+}
+
+export default App;
+```

@@ -14,15 +14,17 @@ class ProductNewPage extends Component {
 
     const { currentTarget } = event;
     const formData = new FormData(currentTarget);
-
+    // console.log(formData);
+    // debugger
     Product.create({
       title: formData.get("title"),
-      body: formData.get("body"),
+      description: formData.get("body"),
       price: formData.get("price")
-    // }).then(data => console.log(data));
+      
+    //   }).then(data => console.log(data));
     }).then(data => {
         const productId = data.id;
-
+        
         this.props.history.push(`/products/${productId}`);
       });
   }

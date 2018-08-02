@@ -1,0 +1,351 @@
+# React: State
+continue the awesome-answer react 
+
+Implementing ` { Component}`
+for example:
+```js
+// `Component` is a named export. Unlike `React` which is a default
+// export, a named export must written with exact names.
+
+// The two exports below are named exports where the name of the
+// variable or class is significant.
+// export const Component = { ... }
+// export class Component { ... }
+import React, { Component } from "react";
+```
+
+Implementing `Classes` and `this.props`
+
+FROM:
+```js
+const QuestionShowPage = props => {
+  const { question } = props;
+....
+```
+TO:
+```js
+class QuestionShowPage extends Component {
+  render() {
+    const { question } = this.props;
+.....
+```
+
+
+The concept of `constructor` and `super()`
+Also implementing the concept of `state`
+
+for example:
+```js
+class QuestionShowPage extends Component {
+  constructor(props) {
+    // When writing your own `constructor` you must
+    // take in `props` as an argument and you must
+    // call the constructor of the `Component` class with
+    // `super(props)` passing it the `props`.
+    super(props);
+
+    this.state = {
+      question: props.question
+    };
+  }
+
+  render() {
+    const { question } = this.props;
+```
+
+Add: React dev tool chrome extension
+
+[image:637CD72C-D24C-465E-A2EC-E17A5EB1DBD2-2873-0000079AAD50E350/2ADA2414-F495-4CCA-8193-32A1629E6B6E.png]
+
+*Any change we do to the DOM, we change the state*
+
+Now, we can replace this code:
+```js
+<QuestionDetails
+          title="What is your favourite colour?"
+          body="Red, green, blue, light golden rod, lime, magenta, etc."
+          author={{ full_name: "Bridge Troll" }}
+          view_count={22}
+          created_at={new Date()}
+          updated_at={new Date()}
+        />
+```
+TO:
+```js
+<QuestionDetails {...question} />
+```
+
+
+`Constructor`
+```js
+class QuestionIndexPage extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      Questions: props.questions || []
+    };
+  }
+  render() {
+    const { questions } = this.state;
+    
+```
+
+*::Events::*
+Resources:  List of available events:
+[SyntheticEvent - React](https://reactjs.org/docs/events.html)
+
+
+[image:8D2EF060-C8F8-4A78-86A8-FE26AF47EA43-2873-0000096EBE55E8B4/3717734C-4949-43CE-AF35-7FBE5A89720D.png]
+
+```js
+return (
+      <main>
+        <h1>Questions</h1>
+        <ul style={{ padding: 0, listStyle: "none" }}>
+          {questions.map((question, index) => (
+            <li style={{ marginBottom: "1rem" }} key={question.id}>
+              <span>{new Date(question.created_at).toLocaleDateString()}</span>
+              {" • "}
+              <a href="#not-used">{question.title}</a> <br />
+              {/*
+              document
+                .querySelector("button")
+                .addEventListener("click", () => console.log("Button clicked!"))
+              */}
+              <button onClick={e => console.log(e.target, "was clicked!")}>
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+      </main>
+    );
+```
+
+Replace
+```js
+ {/* <button onClick={e => console.log(e.target, "was clicked!")}> */}
+              <button onClick={this.deleteQuestion}>Delete</button>
+```
+
+Add the call back:
+```js
+  deleteQuestion() {
+    // Never directly assign to the state.
+    // this.state = { question: [] } // !!BAD ð¡
+    // To do any changes to the state, you must use the
+    // this.setState(...) method.
+
+    this.setState({
+      questions: []
+    });
+   	console.log("Delete clicked!");
+  }
+```
+
+::*super important!!!!*::
+*::To make sure we don't lose the instance of the component::*
+```js
+    // For methods that we pass as callbacks to event listeners
+    // or anything else, that method will no longer be owned by
+    // instance of our component which will make `this` undefined
+    // at the time it is called.
+
+    // To permanently set `this` to an object of choice, call the
+    // `.bind(<an-object>)` on a function. This will create a new
+    // version of the function where this set to <an-object>
+    // and can never be changed again.
+    this.deleteQuestion = this.deleteQuestion.bind(this);
+  }
+```
+
+
+// Implementing the Delete button on the QuestionShowPage:
+`<button onClick={this.deleteQuestion}>Delete</button>`
+
+```js
+  deleteQuestion() {
+    this.setState({
+      question: undefined
+    });
+  }
+```
+
+`  this.deleteQuestion = this.deleteQuestion.bind(this);`
+
+Error: Cannot read a  property of undefined
+In order to solve this error and check if my questions is a question:
+```js
+if (!question) {
+      return (
+        <main>
+          <h2>Question doesn't exist</h2>
+        </main>
+      );
+    }
+```
+
+The entire file, should look like this:
+```js
+// `Component` is a named export. Unlike `React` which is a default
+// export, a named export must written with exact names.
+
+// The two exports below are named exports where the name of the
+// variable or class is significant.
+// export const Component = { ... }
+// export class Component { ... }
+import React, { Component } from "react";
+import QuestionDetails from "./QuestionDetails";
+import AnswerList from "./AnswerList";
+
+class QuestionShowPage extends Component {
+  constructor(props) {
+    // When writing your own `constructor` you must
+    // take in `props` as an argument and you must
+    // call the constructor of the `Component` class with
+    // `super(props)` passing it the `props`.
+    super(props);
+
+    this.state = {
+      question: props.question
+    };
+
+    this.deleteQuestion = this.deleteQuestion.bind(this);
+  }
+
+  deleteQuestion() {
+    this.setState({
+      question: undefined
+    });
+  }
+
+  render() {
+    const { question } = this.state;
+
+    if (!question) {
+      return (
+        <main>
+          <h2>Question doesn't exist</h2>
+        </main>
+      );
+    }
+
+    return (
+      <main>
+        <QuestionDetails {...question} />
+        <button onClick={this.deleteQuestion}>Delete</button>
+        <h2>Answers</h2>
+        <AnswerList answers={question.answers} />
+      </main>
+    );
+  }
+}
+
+export default QuestionShowPage;
+```
+
+::*Propagating Events*::
+
+implementing delete button on AnswerDetails:
+`<button onClick={() => console.log(props.id)}>Delete</button>`
+
+```js
+// <AnswerDetails
+//  onDeleteClick={() => console.log("Deleting")}
+//  {...answer}
+// />
+const AnswerDetails = props => {
+  const { onDeleteClick = () => {} } = props;
+
+```
+
+Add to AnswerList
+```js
+          <AnswerDetails 
+           onDeleteClick={id => console.log("From answerlist", id)}
+          {...answer} />
+```
+
+`const { answers = [], onAwnswerDeleteClick = () => {} } = props;`
+*you can name `onAwnswerDeleteClick` whatever you want*
+
+Change:
+`<AnswerDetails onDeleteClick={onAnswerDeleteClick} {...answer} />`
+
+Go to QuestionShowPage:
+Modify:
+```js
+// `Component` is a named export. Unlike `React` which is a default
+// export, a named export must written with exact names.
+
+// The two exports below are named exports where the name of the
+// variable or class is significant.
+// export const Component = { ... }
+// export class Component { ... }
+import React, { Component } from "react";
+import QuestionDetails from "./QuestionDetails";
+import AnswerList from "./AnswerList";
+
+class QuestionShowPage extends Component {
+  constructor(props) {
+    // When writing your own `constructor` you must
+    // take in `props` as an argument and you must
+    // call the constructor of the `Component` class with
+    // `super(props)` passing it the `props`.
+    super(props);
+
+    this.state = {
+      question: props.question
+    };
+
+    this.deleteQuestion = this.deleteQuestion.bind(this);
+    this.deleteAnswer = this.deleteAnswer.bind(this);
+  }
+
+  deleteQuestion() {
+    this.setState({
+      question: undefined
+    });
+  }
+
+  deleteAnswer(id) {
+    const { question } = this.state;
+    const { answers = [] } = question;
+
+    this.setState({
+      question: {
+        ...question,
+        answers: answers.filter(answer => answer.id !== id)
+      }
+    });
+  }
+
+  render() {
+    const { question } = this.state;
+
+    if (!question) {
+      return (
+        <main>
+          <h2>Question doesn't exist</h2>
+        </main>
+      );
+    }
+
+    return (
+      <main>
+        <QuestionDetails {...question} />
+        <button onClick={this.deleteQuestion}>Delete</button>
+        <h2>Answers</h2>
+        <AnswerList
+          onAnswerDeleteClick={this.deleteAnswer}
+          answers={question.answers}
+        />
+      </main>
+    );
+  }
+}
+
+export default QuestionShowPage;
+```
+
+

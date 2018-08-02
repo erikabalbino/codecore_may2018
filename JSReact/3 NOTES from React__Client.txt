@@ -1,0 +1,512 @@
+# React: Client
+Other resources:
+[React Router: Declarative Routing for React.js](https://reacttraining.com/react-router/)
+
+Lifecycle Methods:
+[React.Component - React](https://reactjs.org/docs/react-component.html)
+
+[image:8ED33E52-0F24-4215-A601-EF38B1120EF0-239-000088CD751320BD/FF40A75E-CB68-4DA9-B923-7D6DB8E2F0B1.png]
+[image:AEAA158C-0CD8-4A1E-A014-25A84B6B782B-239-000088D110D2DCDD/D6D04753-08C2-43AC-B021-6C591FABC94F.png]
+[image:555AA210-7553-46F2-9F4E-51474389DA7F-239-000088D4AB3CE83B/F602267A-B78F-4EBC-B504-8B91C5D6CA1C.png]
+
+This is how we use it:
+[image:1B53BDBA-6BB3-4664-B332-21D7AB55D76A-239-000088E7101FC874/60B2F3FC-19F7-47BC-8DBD-2D4F05116C6F.png]
+
+Create a component to store the current Time and Date:
+
+`cd project`
+`npm start`
+ 
+::*Adding lifecycle methods*::
+create a new component file
+CurrentDateTime.jsx
+Add:
+```js
+import React, { Component } from "react";
+
+class CurrentDateTime extends Component {
+    render() {
+        return <span> {new Date().toLocaleDateString()}</span>
+    
+    }
+}
+
+export default CurrentDateTime;
+
+```
+
+Add to App.jsx
+ `import CurrentDateTime from "./CurrentDateTime";` 
+
+Test browser
+
+Now, let's set up our state:
+Add `constructor` to CurrentDateTime.jsx
+```js
+
+constructor(props) {
+        super(props);
+
+        this.state = {
+            currentDate: new Date()
+        };
+    }
+```
+Add:
+```js
+ render() {
+
+        const { currentDate } = this.state;
+```
+
+Add the `componentDidMount()` and the `componentWillUnmount()`
+```js
+  componentDidMount() {
+    this.intervalId = setInterval(() => {
+      this.setState({ currentDate: new Date() });
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalId);
+  }
+```
+
+*::Making HTTP Request::*
+* The Web APIs requests are done componentDidMount()
+* Retrieved date is stored in the state
+* In other case, requests are made as part of a callback (on Click, On Submit)
+
+Create another directory and file:
+src/requests/question.js
+Add:
+```js
+const HOST = "localhost:3000";
+const API_BASE = "/api/v1";
+const BASE_URL = `http://${HOST}${API_BASE}`;
+
+const Question = {
+  all() {
+    return fetch(`${BASE_URL}/questions`, { credentials: "include" }).then(
+      res => res.json()
+    );
+  },
+  one(id) {
+    return fetch(`${BASE_URL}/questions/${id}`, {
+      credentials: "include"
+    }).then(res => res.json());
+  },
+  create(params) {
+    return fetch(`${BASE_URL}/questions/`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(params)
+    }).then(res => res.json());
+  }
+};
+
+const Session = {
+  create(params) {
+    return fetch(`${BASE_URL}/session`, {
+      method: "POST",
+      // credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(params)
+    }).then(res => res.json());
+  }
+};
+
+export default Question;
+```
+
+in order to change the port on your react project, go to package.son
+and modify:
+ `"start": "PORT=3001 react-scripts start",`
+
+
+go to Terminal
+`cd your awesome answers SPA project`
+`code .`
+`rails s`
+
+
+on react project
+Add to QuestionIndexPage:
+`import Question from "../request/question";`
+```js
+  componentDidMount() {
+    Question.all().then(questions => {
+      console.table(questions);
+    });
+  }
+```
+
+on awesome-answers SPA:
+application.rb
+add `localhost:3001`
+like: `origins('localhost:3002', 'localhost:3001')`
+`rails s`
+
+on react project
+Now, modify to:
+```js
+  componentDidMount() {
+    Question.all().then(questions => {
+      this.setState({ questions: questions });
+    });
+  }
+```
+
+Remove this code from App.jsx:
+`questions={questionIndexData}`
+
+QuestionIndexPage.jsx
+Add to state: `loading:true,`
+Add:
+```js
+    const { loading, questions } = this.state;
+
+    if (loading) {
+      return (
+        <main>
+          <h1>Questions</h1>
+          <h2>Loading...</h2>
+        </main>
+      );
+    }
+```
+
+```js
+  componentDidMount() {
+    Question.all()
+      .then(questions => {
+        this.setState({ loading: false, questions: questions });
+      })
+      .catch(() => {
+        this.this.setState({ loading: false });
+      });
+  }
+```
+
+on awesome-answers SPA
+
+include nested queries
+
+questions_controller.rb for the api:
+```rb
+  def show
+    render(
+      json: question,
+      # When using ActiveModelSerializer, it will
+      # not automatically including nested associations
+      # in the generated JSON. It does this for
+      # perfomance reasons.
+
+      # To include a nested association, we must
+      # tell Rails to do so using the "include"
+      # argument in the "render" method.
+
+      # In the below, we specify that the "author"
+      # associate is included. We also specify
+      # the "answer" association and the "answer's
+      # authors" are included as well.
+      include: [ :author, { answers: [ :author ]}]
+    )
+  end
+```
+
+*::React Router::*
+* Resource: [React Router: Declarative Routing for React.js](https://reacttraining.com/react-router/web/example/basic)
+
+It's going to simulate the router, like we were going in the back, but actually we're doing in the front:
+
+Install a package:
+`$ yarn add react-router-dom`
+
+go to App.jsx
+```js
+import React from "react";
+//  We can rename (or alias named imports)
+// by using the 'as' keyword as showned below:
+import { BrowserRouter as Router, Route } from "react-router-dom";
+
+import QuestionIndexPage from "./QuestionIndexPage";
+import QuestionShowPage from "./QuestionShowPage";
+import CurrentDateTime from "./CurrentDateTime";
+
+import questionShowData from "../data/question-show";
+
+const App = props => {
+  return (
+    <Router>
+      <div>
+        <CurrentDateTime />
+        <Route path="/questions" exact component={QuestionIndexPage} />
+        <Route path="/questions/:id" component={QuestionShowPage} />
+      </div>
+    </Router>
+  );
+};
+
+export default App;
+```
+
+Let's add a NavBar and remove the CurrentDateTime
+
+```js
+import React from "react";
+//  We can rename (or alias named imports)
+// by using the 'as' keyword as showned below:
+import { BrowserRouter as Router, Route } from "react-router-dom";
+
+import NavBar from "./QuestionIndexPage";
+import QuestionIndexPage from "./NavBar";
+import QuestionShowPage from "./QuestionShowPage";
+
+import questionShowData from "../data/question-show";
+
+const App = props => {
+  return (
+    <Router>
+      <div>
+        <NavBar />
+        <Route path="/questions" exact component={QuestionIndexPage} />
+        <Route path="/questions/:id" component={QuestionShowPage} />
+      </div>
+    </Router>
+  );
+};
+
+export default App;
+```
+
+ Create a new component: NavBar.jsx
+```js
+import React from "react";
+import { Link } from "react-router-dom";
+
+const NavBar = props => {
+  return (
+    <nav>
+      <Link to="/">Welcome</Link>
+      <Link to="/questions">Questions</Link>
+    </nav>
+  );
+};
+
+export default NavBar;
+```
+
+add to App.js
+`<Route path="/" exact component={WelcomePage} />`
+
+Create a new component: WelcomePage.jsx
+```js
+import React, { Component } from "react";
+
+class WelcomePage extends Component {
+  render() {
+    return (
+      <main>
+        <h2>Welcome to Awesome Answers!</h2>
+      </main>
+    );
+  }
+}
+
+export default WelcomePage;
+```
+
+
+on App.js
+Replace 
+FROM:
+```js
+      <Link to="/">Welcome</Link>
+      <Link to="/questions">Questions</Link>
+```
+TO:
+```js
+      <NavLink exact to="/">Welcome</NavLink>
+      <NavLink exact to="/questions">Questions</NavLink>
+```
+Plus add `<nav className="NavBar">`
+
+Add to Index.css
+```css
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+main {
+  margin: 0 2rem;
+}
+
+.NavBar {
+  display: flex;
+  background-color: seashell;
+}
+
+.NavBar a {
+  color: steelblue;
+  text-decoration: none;
+  padding: 1rem;
+}
+
+.NavBar a.active {
+  color: seashell;
+  background-color: steelblue;
+}
+```
+
+Update QuestionShowPage.jsx
+```js
+  componentDidMount() {
+    // react-router-dom will add 3 props to any component
+    // it renders:
+    // https://reacttraining.com/react-router/web/api/history
+    // console.log(this.props);
+
+    const questionId = this.props.match.params.id;
+
+    Question.one(questionId)
+      .then(question => {
+        console.log(question);
+
+        this.setState({ loading: false, question: question });
+      })
+      .catch(() => {
+        this.setState({ loading: false });
+      });
+  }
+```
+
+Now let's do a QuestionNewPage.jsx
+```js
+import React, { Component } from "react";
+
+class QuestionNewPage extends Component {
+  render() {
+    return (
+      <main>
+        <h2>New Question</h2>
+        <form>
+          <div>
+            <label htmlFor="title">Title</label> <br />
+            <input name="title" id="title" />
+          </div>
+
+          <div>
+            <label htmlFor="body">Body</label> <br />
+            <textarea name="body" id="body" cols="60" rows="4" />
+          </div>
+
+          <div>
+            <input type="submit" value="Submit" />
+          </div>
+        </form>
+      </main>
+    );
+  }
+}
+
+export default QuestionNewPage;
+```
+
+Add `<Switch>` to App.js
+*Note that now the order of the routes matter*
+
+Add to Navbar.jsx
+```js
+<NavLink exact to="/questions/new">
+        New Question
+      </NavLink>
+```
+
+Add to QuestionNewPage
+```js
+  constructor(props) {
+    super(props);
+
+    this.createQuestion = this.createQuestion.bind(this);
+  }
+
+  createQuestion(event) {
+    event.preventDefault();
+    console.log(event.currentTarget);
+  }
+```
+
+Add `import Question from "../requests/question";`
+
+Modify:
+```js
+createQuestion(event) {
+    event.preventDefault();
+    const { currentTarget } = event;
+
+    const formData = new FormData(currentTarget);
+
+    Question.create({
+      title: formData.get("title"),
+      body: formData.get("body")
+    }).then(data => console.log(data));
+  }
+```
+
+Create a new file request/session.js
+```js
+const HOST = "localhost:3000";
+const API_BASE = "/api/v1";
+const BASE_URL = `http://${HOST}${API_BASE}`;
+
+const Session = {
+  create(params) {
+    return fetch(`${BASE_URL}/session`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(params)
+    }).then(res => res.json());
+  }
+};
+
+export default Session;
+```
+
+Add to index.js
+`import Session from "./requests/session";`
+`Session.create({ email: "js@winterfell.gov", password: "supersecret" });`
+
+Go to QuestionNewPage.jsx
+REPLACE
+FROM:
+```js
+    Question.create({
+      title: formData.get("title"),
+      body: formData.get("body")
+    }).then(data => console.log(data));
+  }
+```
+TO:
+```js
+    Question.create({
+      title: formData.get("title"),
+      body: formData.get("body")
+    }).then(data => {
+      const questionId = data.id;
+
+      this.props.history.push(`/questions/${questionId}`);
+    });
+  }
+
+```
